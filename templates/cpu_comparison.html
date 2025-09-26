@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPU Comparison - Tech Benchmark Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .selection-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .cpu-selectors {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .cpu-selector {
+            text-align: center;
+        }
+        
+        .cpu-selector h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .searchable-dropdown {
+            position: relative;
+            width: 100%;
+        }
+        
+        .dropdown-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+        }
+        
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .dropdown-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-placeholder {
+            color: #999;
+        }
+        
+        .vs-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .comparison-section {
+            padding: 30px;
+        }
+        
+        .no-selection {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin: 50px 0;
+        }
+        
+        .comparison-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .cpu-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .cpu-info h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .cpu-info p {
+            color: #666;
+        }
+        
+        .benchmark-group {
+            margin-bottom: 40px;
+        }
+        
+        .group-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .benchmark-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 20px;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            background: white;
+        }
+        
+        .benchmark-item:last-child {
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .benchmark-name {
+            grid-column: 1 / -1;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .cpu-result {
+            text-align: center;
+        }
+        
+        .score-display {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .score-available {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+        
+        .score-na {
+            background: #6c757d;
+            color: #fff;
+        }
+        
+        .percentage-diff {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .better {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .worse {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+        
+        .equal {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .unit-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .cpu-selectors {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .vs-text {
+                order: -1;
+            }
+            
+            .comparison-header {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .benchmark-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .back-btn {
+                position: static;
+                transform: none;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-btn">← Back</a>
+            <h1>💻 CPU Comparison</h1>
+            <p>Compare two CPUs across all available benchmarks</p>
+        </div>
+        
+        <div class="selection-section">
+            <div class="cpu-selectors">
+                <div class="cpu-selector">
+                    <h3>CPU 1</h3>
+                    <div class="searchable-dropdown">
+                        <input type="text" id="cpu1-input" class="dropdown-input" placeholder="Type to search CPUs..." readonly>
+                        <div id="cpu1-list" class="dropdown-list"></div>
+                    </div>
+                </div>
+                
+                <div class="vs-text">VS</div>
+                
+                <div class="cpu-selector">
+                    <h3>CPU 2</h3>
+                    <div class="searchable-dropdown">
+                        <input type="text" id="cpu2-input" class="dropdown-input" placeholder="Type to search CPUs..." readonly>
+                        <div id="cpu2-list" class="dropdown-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-section">
+            <div id="no-selection" class="no-selection">
+                Select two CPUs above to see their comparison
+            </div>
+            
+            <div id="comparison-results" style="display: none;">
+                <div class="comparison-header">
+                    <div class="cpu-info" id="cpu1-info">
+                        <h2 id="cpu1-name">-</h2>
+                        <p id="cpu1-cores">-</p>
+                    </div>
+                    <div class="cpu-info" id="cpu2-info">
+                        <h2 id="cpu2-name">-</h2>
+                        <p id="cpu2-cores">-</p>
+                    </div>
+                </div>
+                
+                <div id="benchmark-groups"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cpuData = {};
+        let allCpus = [];
+        let selectedCpu1 = null;
+        let selectedCpu2 = null;
+        
+        // Load CPUs on page load
+        window.onload = function() {
+            loadCPUs();
+        };
+
+        async function loadCPUs() {
+            try {
+                const response = await fetch('/api/products?type=CPU');
+                const cpus = await response.json();
+                
+                allCpus = cpus;
+                
+                // Store CPU data for later use
+                cpus.forEach(cpu => {
+                    cpuData[cpu.id] = cpu;
+                });
+                
+                // Setup searchable dropdowns
+                setupSearchableDropdown('cpu1', cpus, (cpu) => {
+                    selectedCpu1 = cpu;
+                    updateComparison();
+                });
+                
+                setupSearchableDropdown('cpu2', cpus, (cpu) => {
+                    selectedCpu2 = cpu;
+                    updateComparison();
+                });
+                
+            } catch (error) {
+                console.error('Error loading CPUs:', error);
+            }
+        }
+
+        function setupSearchableDropdown(id, items, onSelect) {
+            const input = document.getElementById(`${id}-input`);
+            const list = document.getElementById(`${id}-list`);
+            
+            // Make input editable when clicked
+            input.addEventListener('click', () => {
+                input.removeAttribute('readonly');
+                input.focus();
+                showDropdown(list, items, input, onSelect, id);
+            });
+            
+            // Handle typing
+            input.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filtered = items.filter(item => 
+                    item.name.toLowerCase().includes(query)
+                );
+                showDropdown(list, filtered, input, onSelect, id);
+            });
+            
+            // Handle focus out
+            input.addEventListener('blur', (e) => {
+                // Delay hiding to allow for item clicks
+                setTimeout(() => {
+                    if (!list.contains(document.activeElement)) {
+                        hideDropdown(list);
+                        if (!getSelectedValue(id)) {
+                            input.value = '';
+                            input.setAttribute('readonly', 'readonly');
+                        }
+                    }
+                }, 150);
+            });
+            
+            // Handle keyboard navigation
+            input.addEventListener('keydown', (e) => {
+                const items = list.querySelectorAll('.dropdown-item');
+                const current = list.querySelector('.dropdown-item.highlighted');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const next = current ? current.nextElementSibling : items[0];
+                    if (next) highlightItem(next);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prev = current ? current.previousElementSibling : items[items.length - 1];
+                    if (prev) highlightItem(prev);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (current) {
+                        current.click();
+                    }
+                } else if (e.key === 'Escape') {
+                    hideDropdown(list);
+                    input.blur();
+                }
+            });
+        }
+
+        function showDropdown(list, items, input, onSelect, id) {
+            list.innerHTML = '';
+            list.style.display = 'block';
+            
+            if (items.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'dropdown-item';
+                noResults.textContent = 'No CPUs found';
+                noResults.style.color = '#999';
+                list.appendChild(noResults);
+                return;
+            }
+            
+            items.slice(0, 20).forEach((item, index) => { // Limit to 20 results
+                const div = document.createElement('div');
+                div.className = 'dropdown-item';
+                div.textContent = item.name;
+                div.addEventListener('click', () => {
+                    selectItem(input, item, onSelect, id);
+                    hideDropdown(list);
+                });
+                list.appendChild(div);
+                
+                if (index === 0) highlightItem(div);
+            });
+        }
+
+        function hideDropdown(list) {
+            list.style.display = 'none';
+        }
+
+        function highlightItem(item) {
+            // Remove previous highlight
+            const prev = item.parentElement.querySelector('.highlighted');
+            if (prev) prev.classList.remove('highlighted');
+            
+            // Add highlight
+            item.classList.add('highlighted');
+            item.style.backgroundColor = '#667eea';
+            item.style.color = 'white';
+        }
+
+        function selectItem(input, item, onSelect, id) {
+            input.value = item.name;
+            input.setAttribute('readonly', 'readonly');
+            setSelectedValue(id, item.id);
+            onSelect(item);
+        }
+
+        function getSelectedValue(id) {
+            return id === 'cpu1' ? selectedCpu1?.id : selectedCpu2?.id;
+        }
+
+        function setSelectedValue(id, value) {
+            if (id === 'cpu1') {
+                selectedCpu1 = value ? cpuData[value] : null;
+            } else {
+                selectedCpu2 = value ? cpuData[value] : null;
+            }
+        }
+
+        async function updateComparison() {
+            if (!selectedCpu1 || !selectedCpu2) {
+                document.getElementById('no-selection').style.display = 'block';
+                document.getElementById('comparison-results').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('no-selection').style.display = 'none';
+            document.getElementById('comparison-results').style.display = 'block';
+            
+            // Update CPU info
+            document.getElementById('cpu1-name').textContent = selectedCpu1.name;
+            document.getElementById('cpu1-cores').textContent = selectedCpu1.core_count || 'Core count not available';
+            document.getElementById('cpu2-name').textContent = selectedCpu2.name;
+            document.getElementById('cpu2-cores').textContent = selectedCpu2.core_count || 'Core count not available';
+            
+            // Load benchmark data for both CPUs
+            await loadBenchmarkComparison(selectedCpu1.id, selectedCpu2.id);
+        }
+
+        async function loadBenchmarkComparison(cpu1Id, cpu2Id) {
+            try {
+                const [cpu1Response, cpu2Response] = await Promise.all([
+                    fetch(`/api/product/${cpu1Id}/results`),
+                    fetch(`/api/product/${cpu2Id}/results`)
+                ]);
+                
+                const cpu1Data = await cpu1Response.json();
+                const cpu2Data = await cpu2Response.json();
+                
+                // Get all unique benchmarks
+                const allBenchmarks = new Set();
+                cpu1Data.results.forEach(r => allBenchmarks.add(r.benchmark_name));
+                cpu2Data.results.forEach(r => allBenchmarks.add(r.benchmark_name));
+                
+                // Create lookup maps
+                const cpu1Results = {};
+                const cpu2Results = {};
+                
+                cpu1Data.results.forEach(r => {
+                    cpu1Results[r.benchmark_name] = r;
+                });
+                
+                cpu2Data.results.forEach(r => {
+                    cpu2Results[r.benchmark_name] = r;
+                });
+                
+                // Group benchmarks
+                const groups = groupBenchmarks(Array.from(allBenchmarks), cpu1Results, cpu2Results);
+                
+                // Display comparison
+                displayComparison(groups, cpu1Results, cpu2Results);
+                
+            } catch (error) {
+                console.error('Error loading benchmark comparison:', error);
+            }
+        }
+
+        function groupBenchmarks(benchmarkNames, cpu1Results, cpu2Results) {
+            const groups = {
+                'Productivity': [],
+                'Gaming': {}
+            };
+            
+            benchmarkNames.forEach(name => {
+                // Get benchmark details from either CPU (they should be the same)
+                const benchmarkInfo = cpu1Results[name] || cpu2Results[name];
+                
+                if (benchmarkInfo && benchmarkInfo.resolution) {
+                    // Gaming benchmark - group by game
+                    const gameName = name.split(' CPU Performance')[0];
+                    if (!groups['Gaming'][gameName]) {
+                        groups['Gaming'][gameName] = [];
+                    }
+                    groups['Gaming'][gameName].push(name);
+                } else {
+                    // Productivity benchmark
+                    groups['Productivity'].push(name);
+                }
+            });
+            
+            return groups;
+        }
+
+        function displayComparison(groups, cpu1Results, cpu2Results) {
+            const container = document.getElementById('benchmark-groups');
+            container.innerHTML = '';
+            
+            // Display Productivity benchmarks
+            if (groups['Productivity'].length > 0) {
+                const productivityDiv = createBenchmarkGroup('Productivity Benchmarks', groups['Productivity'], cpu1Results, cpu2Results);
+                container.appendChild(productivityDiv);
+            }
+            
+            // Display Gaming benchmarks grouped by game
+            Object.keys(groups['Gaming']).forEach(gameName => {
+                const gameDiv = createBenchmarkGroup(`${gameName} Gaming`, groups['Gaming'][gameName], cpu1Results, cpu2Results);
+                container.appendChild(gameDiv);
+            });
+        }
+
+        function createBenchmarkGroup(groupTitle, benchmarks, cpu1Results, cpu2Results) {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'benchmark-group';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'group-title';
+            titleDiv.textContent = groupTitle;
+            groupDiv.appendChild(titleDiv);
+            
+            benchmarks.forEach(benchmarkName => {
+                const benchmarkDiv = createBenchmarkItem(benchmarkName, cpu1Results, cpu2Results);
+                groupDiv.appendChild(benchmarkDiv);
+            });
+            
+            return groupDiv;
+        }
+
+        function createBenchmarkItem(benchmarkName, cpu1Results, cpu2Results) {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'benchmark-item';
+            
+            // Benchmark name
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'benchmark-name';
+            const benchmarkInfo = cpu1Results[benchmarkName] || cpu2Results[benchmarkName];
+            nameDiv.textContent = benchmarkName + (benchmarkInfo ? ` (${benchmarkInfo.unit_type})` : '');
+            itemDiv.appendChild(nameDiv);
+            
+            // CPU 1 result
+            const cpu1ResultDiv = createCPUResult(cpu1Results[benchmarkName], cpu2Results[benchmarkName], true);
+            itemDiv.appendChild(cpu1ResultDiv);
+            
+            // CPU 2 result
+            const cpu2ResultDiv = createCPUResult(cpu2Results[benchmarkName], cpu1Results[benchmarkName], false);
+            itemDiv.appendChild(cpu2ResultDiv);
+            
+            return itemDiv;
+        }
+
+        function createCPUResult(currentResult, otherResult, isFirst) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'cpu-result';
+            
+            if (currentResult) {
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'score-display score-available';
+                scoreDiv.textContent = currentResult.score.toFixed(1);
+                resultDiv.appendChild(scoreDiv);
+                
+                const unitDiv = document.createElement('div');
+                unitDiv.className = 'unit-label';
+                unitDiv.textContent = currentResult.unit_type;
+                resultDiv.appendChild(unitDiv);
+                
+                // Calculate percentage difference
+                if (otherResult) {
+                    const percentDiff = calculatePercentageDifference(currentResult.score, otherResult.score, currentResult.unit_type);
+                    const diffDiv = document.createElement('div');
+                    diffDiv.className = `percentage-diff ${percentDiff.class}`;
+                    diffDiv.textContent = percentDiff.text;
+                    resultDiv.appendChild(diffDiv);
+                }
+            } else {
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'score-display score-na';
+                scoreDiv.textContent = 'N/A';
+                resultDiv.appendChild(scoreDiv);
+                
+                const unitDiv = document.createElement('div');
+                unitDiv.className = 'unit-label';
+                unitDiv.textContent = 'No data available';
+                resultDiv.appendChild(unitDiv);
+            }
+            
+            return resultDiv;
+        }
+
+        function calculatePercentageDifference(currentScore, otherScore, unitType) {
+            if (currentScore === otherScore) {
+                return { class: 'equal', text: 'Equal' };
+            }
+            
+            let percentDiff;
+            let isBetter;
+            
+            if (unitType === 'seconds') {
+                // For time-based benchmarks, lower is better
+                percentDiff = ((otherScore - currentScore) / otherScore) * 100;
+                isBetter = currentScore < otherScore;
+            } else {
+                // For score/fps benchmarks, higher is better
+                percentDiff = ((currentScore - otherScore) / otherScore) * 100;
+                isBetter = currentScore > otherScore;
+            }
+            
+            const absPercent = Math.abs(percentDiff).toFixed(0);
+            
+            if (isBetter) {
+                return { class: 'better', text: `${absPercent}% better` };
+            } else {
+                return { class: 'worse', text: `${absPercent}% worse` };
+            }
+        }
+
+        // Add CSS for highlighted dropdown items
+        const style = document.createElement('style');
+        style.textContent = `
+            .dropdown-item.highlighted {
+                background-color: #667eea !important;
+                color: white !important;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

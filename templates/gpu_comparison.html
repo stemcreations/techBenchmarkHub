@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPU Comparison - Tech Benchmark Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .selection-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .gpu-selectors {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 30px;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .gpu-selector {
+            text-align: center;
+        }
+        
+        .gpu-selector h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .searchable-dropdown {
+            position: relative;
+            width: 100%;
+        }
+        
+        .dropdown-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            background: white;
+        }
+        
+        .dropdown-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #667eea;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .dropdown-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        
+        .dropdown-placeholder {
+            color: #999;
+        }
+        
+        .vs-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .comparison-section {
+            padding: 30px;
+        }
+        
+        .no-selection {
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin: 50px 0;
+        }
+        
+        .comparison-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .gpu-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .gpu-info h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .benchmark-group {
+            margin-bottom: 40px;
+        }
+        
+        .group-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .benchmark-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 20px;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            background: white;
+        }
+        
+        .benchmark-item:last-child {
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .benchmark-name {
+            grid-column: 1 / -1;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .gpu-result {
+            text-align: center;
+        }
+        
+        .score-display {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .score-available {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+        
+        .score-na {
+            background: #6c757d;
+            color: #fff;
+        }
+        
+        .low-fps-display {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            color: white;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
+        }
+        
+        .low-fps-na {
+            background: #6c757d;
+        }
+        
+        .percentage-diff {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .better {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        
+        .worse {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+        }
+        
+        .equal {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .unit-label {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .gpu-selectors {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .vs-text {
+                order: -1;
+            }
+            
+            .comparison-header {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .benchmark-item {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .back-btn {
+                position: static;
+                transform: none;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-btn">← Back</a>
+            <h1>🎮 GPU Comparison</h1>
+            <p>Compare two GPUs across all available gaming benchmarks</p>
+        </div>
+        
+        <div class="selection-section">
+            <div class="gpu-selectors">
+                <div class="gpu-selector">
+                    <h3>GPU 1</h3>
+                    <div class="searchable-dropdown">
+                        <input type="text" id="gpu1-input" class="dropdown-input" placeholder="Type to search GPUs..." readonly>
+                        <div id="gpu1-list" class="dropdown-list"></div>
+                    </div>
+                </div>
+                
+                <div class="vs-text">VS</div>
+                
+                <div class="gpu-selector">
+                    <h3>GPU 2</h3>
+                    <div class="searchable-dropdown">
+                        <input type="text" id="gpu2-input" class="dropdown-input" placeholder="Type to search GPUs..." readonly>
+                        <div id="gpu2-list" class="dropdown-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-section">
+            <div id="no-selection" class="no-selection">
+                Select two GPUs above to see their comparison
+            </div>
+            
+            <div id="comparison-results" style="display: none;">
+                <div class="comparison-header">
+                    <div class="gpu-info" id="gpu1-info">
+                        <h2 id="gpu1-name">-</h2>
+                    </div>
+                    <div class="gpu-info" id="gpu2-info">
+                        <h2 id="gpu2-name">-</h2>
+                    </div>
+                </div>
+                
+                <div id="benchmark-groups"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gpuData = {};
+        let allGpus = [];
+        let selectedGpu1 = null;
+        let selectedGpu2 = null;
+        
+        // Load GPUs on page load
+        window.onload = function() {
+            loadGPUs();
+        };
+
+        async function loadGPUs() {
+            try {
+                const response = await fetch('/api/products?type=GPU');
+                const gpus = await response.json();
+                
+                allGpus = gpus;
+                
+                // Store GPU data for later use
+                gpus.forEach(gpu => {
+                    gpuData[gpu.id] = gpu;
+                });
+                
+                // Setup searchable dropdowns
+                setupSearchableDropdown('gpu1', gpus, (gpu) => {
+                    selectedGpu1 = gpu;
+                    updateComparison();
+                });
+                
+                setupSearchableDropdown('gpu2', gpus, (gpu) => {
+                    selectedGpu2 = gpu;
+                    updateComparison();
+                });
+                
+            } catch (error) {
+                console.error('Error loading GPUs:', error);
+            }
+        }
+
+        function setupSearchableDropdown(id, items, onSelect) {
+            const input = document.getElementById(`${id}-input`);
+            const list = document.getElementById(`${id}-list`);
+            
+            // Make input editable when clicked
+            input.addEventListener('click', () => {
+                input.removeAttribute('readonly');
+                input.focus();
+                showDropdown(list, items, input, onSelect, id);
+            });
+            
+            // Handle typing
+            input.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filtered = items.filter(item => 
+                    item.name.toLowerCase().includes(query)
+                );
+                showDropdown(list, filtered, input, onSelect, id);
+            });
+            
+            // Handle focus out
+            input.addEventListener('blur', (e) => {
+                // Delay hiding to allow for item clicks
+                setTimeout(() => {
+                    if (!list.contains(document.activeElement)) {
+                        hideDropdown(list);
+                        if (!getSelectedValue(id)) {
+                            input.value = '';
+                            input.setAttribute('readonly', 'readonly');
+                        }
+                    }
+                }, 150);
+            });
+            
+            // Handle keyboard navigation
+            input.addEventListener('keydown', (e) => {
+                const items = list.querySelectorAll('.dropdown-item');
+                const current = list.querySelector('.dropdown-item.highlighted');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const next = current ? current.nextElementSibling : items[0];
+                    if (next) highlightItem(next);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    const prev = current ? current.previousElementSibling : items[items.length - 1];
+                    if (prev) highlightItem(prev);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (current) {
+                        current.click();
+                    }
+                } else if (e.key === 'Escape') {
+                    hideDropdown(list);
+                    input.blur();
+                }
+            });
+        }
+
+        function showDropdown(list, items, input, onSelect, id) {
+            list.innerHTML = '';
+            list.style.display = 'block';
+            
+            if (items.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'dropdown-item';
+                noResults.textContent = 'No GPUs found';
+                noResults.style.color = '#999';
+                list.appendChild(noResults);
+                return;
+            }
+            
+            items.slice(0, 20).forEach((item, index) => { // Limit to 20 results
+                const div = document.createElement('div');
+                div.className = 'dropdown-item';
+                div.textContent = item.name;
+                div.addEventListener('click', () => {
+                    selectItem(input, item, onSelect, id);
+                    hideDropdown(list);
+                });
+                list.appendChild(div);
+                
+                if (index === 0) highlightItem(div);
+            });
+        }
+
+        function hideDropdown(list) {
+            list.style.display = 'none';
+        }
+
+        function highlightItem(item) {
+            // Remove previous highlight
+            const prev = item.parentElement.querySelector('.highlighted');
+            if (prev) prev.classList.remove('highlighted');
+            
+            // Add highlight
+            item.classList.add('highlighted');
+            item.style.backgroundColor = '#667eea';
+            item.style.color = 'white';
+        }
+
+        function selectItem(input, item, onSelect, id) {
+            input.value = item.name;
+            input.setAttribute('readonly', 'readonly');
+            setSelectedValue(id, item.id);
+            onSelect(item);
+        }
+
+        function getSelectedValue(id) {
+            return id === 'gpu1' ? selectedGpu1?.id : selectedGpu2?.id;
+        }
+
+        function setSelectedValue(id, value) {
+            if (id === 'gpu1') {
+                selectedGpu1 = value ? gpuData[value] : null;
+            } else {
+                selectedGpu2 = value ? gpuData[value] : null;
+            }
+        }
+
+        async function updateComparison() {
+            if (!selectedGpu1 || !selectedGpu2) {
+                document.getElementById('no-selection').style.display = 'block';
+                document.getElementById('comparison-results').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('no-selection').style.display = 'none';
+            document.getElementById('comparison-results').style.display = 'block';
+            
+            // Update GPU info
+            document.getElementById('gpu1-name').textContent = selectedGpu1.name;
+            document.getElementById('gpu2-name').textContent = selectedGpu2.name;
+            
+            // Load benchmark data for both GPUs
+            await loadBenchmarkComparison(selectedGpu1.id, selectedGpu2.id);
+        }
+
+        async function loadBenchmarkComparison(gpu1Id, gpu2Id) {
+            try {
+                const [gpu1Response, gpu2Response] = await Promise.all([
+                    fetch(`/api/product/${gpu1Id}/results`),
+                    fetch(`/api/product/${gpu2Id}/results`)
+                ]);
+                
+                const gpu1Data = await gpu1Response.json();
+                const gpu2Data = await gpu2Response.json();
+                
+                // Get all unique benchmarks
+                const allBenchmarks = new Set();
+                gpu1Data.results.forEach(r => allBenchmarks.add(r.benchmark_name));
+                gpu2Data.results.forEach(r => allBenchmarks.add(r.benchmark_name));
+                
+                // Create lookup maps
+                const gpu1Results = {};
+                const gpu2Results = {};
+                
+                gpu1Data.results.forEach(r => {
+                    gpu1Results[r.benchmark_name] = r;
+                });
+                
+                gpu2Data.results.forEach(r => {
+                    gpu2Results[r.benchmark_name] = r;
+                });
+                
+                // Group benchmarks by game and resolution
+                const groups = groupBenchmarks(Array.from(allBenchmarks), gpu1Results, gpu2Results);
+                
+                // Display comparison
+                displayComparison(groups, gpu1Results, gpu2Results);
+                
+            } catch (error) {
+                console.error('Error loading benchmark comparison:', error);
+            }
+        }
+
+        function groupBenchmarks(benchmarkNames, gpu1Results, gpu2Results) {
+            const groups = {};
+            
+            benchmarkNames.forEach(name => {
+                // Get benchmark details from either GPU
+                const benchmarkInfo = gpu1Results[name] || gpu2Results[name];
+                
+                if (benchmarkInfo && benchmarkInfo.resolution) {
+                    // Extract game name (remove resolution and settings)
+                    let gameName = name;
+                    
+                    // Common patterns to extract game names
+                    if (name.includes('Ultra')) {
+                        gameName = name.split(' Ultra')[0];
+                    } else if (name.includes('Max')) {
+                        gameName = name.split(' Max')[0];
+                    } else if (name.includes('High')) {
+                        gameName = name.split(' High')[0];
+                    } else if (name.includes('Maximum')) {
+                        gameName = name.split(' Maximum')[0];
+                    }
+                    
+                    if (!groups[gameName]) {
+                        groups[gameName] = {};
+                    }
+                    
+                    const resolution = benchmarkInfo.resolution;
+                    if (!groups[gameName][resolution]) {
+                        groups[gameName][resolution] = [];
+                    }
+                    
+                    groups[gameName][resolution].push(name);
+                }
+            });
+            
+            return groups;
+        }
+
+        function displayComparison(groups, gpu1Results, gpu2Results) {
+            const container = document.getElementById('benchmark-groups');
+            container.innerHTML = '';
+            
+            // Sort games alphabetically
+            const sortedGames = Object.keys(groups).sort();
+            
+            sortedGames.forEach(gameName => {
+                // Sort resolutions: 1080p, 1440p, 4K
+                const resolutions = Object.keys(groups[gameName]).sort((a, b) => {
+                    const order = { '1080p': 1, '1440p': 2, '4K': 3 };
+                    return (order[a] || 999) - (order[b] || 999);
+                });
+                
+                resolutions.forEach(resolution => {
+                    const groupTitle = `${gameName} - ${resolution}`;
+                    const benchmarks = groups[gameName][resolution];
+                    const gameDiv = createBenchmarkGroup(groupTitle, benchmarks, gpu1Results, gpu2Results);
+                    container.appendChild(gameDiv);
+                });
+            });
+        }
+
+        function createBenchmarkGroup(groupTitle, benchmarks, gpu1Results, gpu2Results) {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'benchmark-group';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'group-title';
+            titleDiv.textContent = groupTitle;
+            groupDiv.appendChild(titleDiv);
+            
+            benchmarks.forEach(benchmarkName => {
+                const benchmarkDiv = createBenchmarkItem(benchmarkName, gpu1Results, gpu2Results);
+                groupDiv.appendChild(benchmarkDiv);
+            });
+            
+            return groupDiv;
+        }
+
+        function createBenchmarkItem(benchmarkName, gpu1Results, gpu2Results) {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'benchmark-item';
+            
+            // Benchmark name
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'benchmark-name';
+            const benchmarkInfo = gpu1Results[benchmarkName] || gpu2Results[benchmarkName];
+            nameDiv.textContent = benchmarkName;
+            itemDiv.appendChild(nameDiv);
+            
+            // GPU 1 result
+            const gpu1ResultDiv = createGPUResult(gpu1Results[benchmarkName], gpu2Results[benchmarkName], true);
+            itemDiv.appendChild(gpu1ResultDiv);
+            
+            // GPU 2 result
+            const gpu2ResultDiv = createGPUResult(gpu2Results[benchmarkName], gpu1Results[benchmarkName], false);
+            itemDiv.appendChild(gpu2ResultDiv);
+            
+            return itemDiv;
+        }
+
+        function createGPUResult(currentResult, otherResult, isFirst) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'gpu-result';
+            
+            if (currentResult) {
+                // Average FPS
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'score-display score-available';
+                scoreDiv.textContent = currentResult.score.toFixed(1);
+                resultDiv.appendChild(scoreDiv);
+                
+                const unitDiv = document.createElement('div');
+                unitDiv.className = 'unit-label';
+                unitDiv.textContent = 'Average FPS';
+                resultDiv.appendChild(unitDiv);
+                
+                // 1% Low FPS (if available)
+                if (currentResult.score_1_percent_low) {
+                    const lowFpsDiv = document.createElement('div');
+                    lowFpsDiv.className = 'low-fps-display';
+                    lowFpsDiv.textContent = currentResult.score_1_percent_low.toFixed(1);
+                    resultDiv.appendChild(lowFpsDiv);
+                    
+                    const lowUnitDiv = document.createElement('div');
+                    lowUnitDiv.className = 'unit-label';
+                    lowUnitDiv.textContent = '1% Low FPS';
+                    resultDiv.appendChild(lowUnitDiv);
+                }
+                
+                // Calculate percentage difference
+                if (otherResult) {
+                    const percentDiff = calculatePercentageDifference(currentResult.score, otherResult.score);
+                    const diffDiv = document.createElement('div');
+                    diffDiv.className = `percentage-diff ${percentDiff.class}`;
+                    diffDiv.textContent = percentDiff.text;
+                    resultDiv.appendChild(diffDiv);
+                }
+            } else {
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'score-display score-na';
+                scoreDiv.textContent = 'N/A';
+                resultDiv.appendChild(scoreDiv);
+                
+                const unitDiv = document.createElement('div');
+                unitDiv.className = 'unit-label';
+                unitDiv.textContent = 'No data available';
+                resultDiv.appendChild(unitDiv);
+            }
+            
+            return resultDiv;
+        }
+
+        function calculatePercentageDifference(currentScore, otherScore) {
+            if (currentScore === otherScore) {
+                return { class: 'equal', text: 'Equal' };
+            }
+            
+            // For FPS, higher is better
+            const percentDiff = ((currentScore - otherScore) / otherScore) * 100;
+            const absPercent = Math.abs(percentDiff).toFixed(0);
+            
+            if (currentScore > otherScore) {
+                return { class: 'better', text: `${absPercent}% better` };
+            } else {
+                return { class: 'worse', text: `${absPercent}% worse` };
+            }
+        }
+
+        // Add CSS for highlighted dropdown items
+        const style = document.createElement('style');
+        style.textContent = `
+            .dropdown-item.highlighted {
+                background-color: #667eea !important;
+                color: white !important;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

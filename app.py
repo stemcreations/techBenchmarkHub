@@ -1,40 +1,38 @@
 # app.py
-# Main Flask application entry point
+# Complete Flask application with all routes
 from flask import Flask, render_template, jsonify, request
 from models import app, db, create_tables, Product, BenchmarkCategory, BenchmarkResult
 from sqlalchemy import func
 
-# Import your routes here when you create them
-# from routes import *
-
 @app.route('/')
 def index():
     """Main dashboard page"""
-    # Check if this is an API request (AJAX)
-    if request.headers.get('Content-Type') == 'application/json' or request.args.get('api'):
-        # Return JSON data for AJAX requests
-        total_products = Product.query.count()
-        total_benchmarks = BenchmarkCategory.query.count()
-        total_results = BenchmarkResult.query.count()
-        
-        cpu_count = Product.query.filter_by(type='CPU').count()
-        gpu_count = Product.query.filter_by(type='GPU').count()
-        
-        stats = {
-            'total_products': total_products,
-            'total_benchmarks': total_benchmarks,
-            'total_results': total_results,
-            'cpu_count': cpu_count,
-            'gpu_count': gpu_count
-        }
-        
-        return jsonify({
-            'message': 'Welcome to Tech Benchmark Hub!',
-            'stats': stats
-        })
-    else:
-        # Return HTML template for browser requests
-        return render_template('index.html')
+    return render_template('index.html')
+
+@app.route('/cpu-comparison')
+def cpu_comparison():
+    """CPU comparison page"""
+    return render_template('cpu_comparison.html')
+
+@app.route('/gpu-comparison')
+def gpu_comparison():
+    """GPU comparison page"""
+    return render_template('gpu_comparison.html')
+
+@app.route('/cpu-gpu-combo')
+def cpu_gpu_combo():
+    """CPU + GPU combo page"""
+    return render_template('cpu_gpu_combo.html')
+
+@app.route('/cpu-charts')
+def cpu_charts():
+    """CPU charts page"""
+    return render_template('cpu_charts.html')
+
+@app.route('/gpu-charts')
+def gpu_charts():
+    """GPU charts page"""
+    return render_template('gpu_charts.html')
 
 @app.route('/api/stats')
 def api_stats():
@@ -86,6 +84,30 @@ def get_products():
         'benchmark_count': len(p.benchmark_results)
     } for p in products])
 
+@app.route('/api/products/search')
+def search_products():
+    """Search products by name"""
+    query = request.args.get('q', '').strip()
+    product_type = request.args.get('type', '').upper()
+    limit = int(request.args.get('limit', 10))
+    
+    if not query:
+        return jsonify([])
+    
+    products_query = Product.query.filter(Product.name.ilike(f'%{query}%'))
+    
+    if product_type in ['CPU', 'GPU']:
+        products_query = products_query.filter_by(type=product_type)
+    
+    products = products_query.limit(limit).all()
+    
+    return jsonify([{
+        'id': p.id,
+        'name': p.name,
+        'type': p.type,
+        'core_count': p.core_count
+    } for p in products])
+
 @app.route('/api/benchmarks')
 def get_benchmarks():
     """Get all benchmark categories"""
@@ -106,6 +128,56 @@ def get_benchmarks():
         'resolution': b.resolution,
         'result_count': len(b.benchmark_results)
     } for b in benchmarks])
+
+@app.route('/api/benchmarks/grouped')
+def get_grouped_benchmarks():
+    """Get benchmarks grouped by type and game"""
+    product_type = request.args.get('type', '').upper()  # 'CPU' or 'GPU'
+    
+    if product_type not in ['CPU', 'GPU']:
+        return jsonify({'error': 'Invalid product type'}), 400
+    
+    benchmarks = BenchmarkCategory.query.filter_by(product_type=product_type).all()
+    
+    grouped = {
+        'productivity': [],
+        'gaming': {}
+    }
+    
+    for benchmark in benchmarks:
+        if benchmark.resolution:
+            # Gaming benchmark - extract game name
+            game_name = benchmark.name
+            
+            # Remove common suffixes to get clean game name
+            suffixes = [' Ultra', ' Max', ' High', ' Maximum', ' RT', ' FSR', ' CPU Performance']
+            for suffix in suffixes:
+                if game_name.endswith(suffix):
+                    game_name = game_name[:-len(suffix)]
+                    break
+            
+            if game_name not in grouped['gaming']:
+                grouped['gaming'][game_name] = []
+            
+            grouped['gaming'][game_name].append({
+                'id': benchmark.id,
+                'name': benchmark.name,
+                'description': benchmark.description,
+                'unit_type': benchmark.unit_type,
+                'resolution': benchmark.resolution,
+                'result_count': len(benchmark.benchmark_results)
+            })
+        else:
+            # Productivity benchmark
+            grouped['productivity'].append({
+                'id': benchmark.id,
+                'name': benchmark.name,
+                'description': benchmark.description,
+                'unit_type': benchmark.unit_type,
+                'result_count': len(benchmark.benchmark_results)
+            })
+    
+    return jsonify(grouped)
 
 @app.route('/api/benchmark/<int:benchmark_id>/results')
 def get_benchmark_results(benchmark_id):
@@ -137,6 +209,50 @@ def get_benchmark_results(benchmark_id):
         } for r in results]
     })
 
+@app.route('/api/benchmark/<int:benchmark_id>/chart-data')
+def get_benchmark_chart_data(benchmark_id):
+    """Get benchmark data formatted for charts"""
+    benchmark = BenchmarkCategory.query.get_or_404(benchmark_id)
+    
+    results = BenchmarkResult.query\
+        .filter_by(category_id=benchmark_id)\
+        .join(Product)\
+        .order_by(BenchmarkResult.score.desc())\
+        .all()
+    
+    chart_data = {
+        'benchmark': {
+            'id': benchmark.id,
+            'name': benchmark.name,
+            'description': benchmark.description,
+            'unit_type': benchmark.unit_type,
+            'product_type': benchmark.product_type,
+            'resolution': benchmark.resolution
+        },
+        'labels': [],
+        'data': [],
+        'low_data': [],  # For GPU 1% low data
+        'colors': []
+    }
+    
+    # Generate colors for chart
+    colors = [
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+        '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+    ]
+    
+    for i, result in enumerate(results):
+        chart_data['labels'].append(result.product.name)
+        chart_data['data'].append(result.score)
+        chart_data['colors'].append(colors[i % len(colors)])
+        
+        if result.score_1_percent_low:
+            chart_data['low_data'].append(result.score_1_percent_low)
+        else:
+            chart_data['low_data'].append(None)
+    
+    return jsonify(chart_data)
+
 @app.route('/api/product/<int:product_id>/results')
 def get_product_results(product_id):
     """Get all benchmark results for a specific product"""
@@ -166,6 +282,67 @@ def get_product_results(product_id):
         } for r in results]
     })
 
+@app.route('/api/compare')
+def compare_products():
+    """Compare multiple products"""
+    product_ids = request.args.get('ids', '').split(',')
+    
+    if len(product_ids) < 2:
+        return jsonify({'error': 'At least 2 product IDs required'}), 400
+    
+    try:
+        product_ids = [int(pid) for pid in product_ids if pid.strip()]
+    except ValueError:
+        return jsonify({'error': 'Invalid product IDs'}), 400
+    
+    products = Product.query.filter(Product.id.in_(product_ids)).all()
+    
+    if len(products) != len(product_ids):
+        return jsonify({'error': 'Some products not found'}), 404
+    
+    # Get all benchmark results for these products
+    results = BenchmarkResult.query\
+        .filter(BenchmarkResult.product_id.in_(product_ids))\
+        .join(BenchmarkCategory)\
+        .join(Product)\
+        .all()
+    
+    # Organize results by product and benchmark
+    comparison_data = {
+        'products': {p.id: {
+            'id': p.id,
+            'name': p.name,
+            'type': p.type,
+            'core_count': p.core_count,
+            'results': {}
+        } for p in products},
+        'benchmarks': {}
+    }
+    
+    for result in results:
+        product_id = result.product_id
+        benchmark_name = result.category.name
+        
+        # Store benchmark info
+        if benchmark_name not in comparison_data['benchmarks']:
+            comparison_data['benchmarks'][benchmark_name] = {
+                'id': result.category.id,
+                'name': result.category.name,
+                'description': result.category.description,
+                'unit_type': result.category.unit_type,
+                'product_type': result.category.product_type,
+                'resolution': result.category.resolution
+            }
+        
+        # Store result
+        comparison_data['products'][product_id]['results'][benchmark_name] = {
+            'score': result.score,
+            'score_1_percent_low': result.score_1_percent_low,
+            'test_date': result.test_date
+        }
+    
+    return jsonify(comparison_data)
+
 @app.route('/api/top-performers')
 def get_top_performers():
     """Get top performing products across different categories"""
@@ -189,7 +366,8 @@ def get_top_performers():
     gaming_gpu_winner = db.session.query(BenchmarkResult, Product)\
         .join(Product)\
         .join(BenchmarkCategory)\
-        .filter(BenchmarkCategory.name == 'Cyberpunk 2077 Ultra 1080p')\
+        .filter(BenchmarkCategory.name == 'Cyberpunk 2077 Ultra')\
+        .filter(BenchmarkCategory.resolution == '1080p')\
         .order_by(BenchmarkResult.score.desc())\
         .first()
     
