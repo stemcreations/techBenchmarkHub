@@ -240,27 +240,29 @@
             background: #6c757d;
         }
         
-        .percentage-diff {
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
+        .performance-indicator {
+            margin-top: 15px;
+        }
+        
+        .percentage-text {
             font-size: 0.9em;
-            margin-top: 10px;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 5px;
         }
         
-        .better {
+        .performance-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .performance-fill {
+            height: 100%;
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            color: white;
-        }
-        
-        .worse {
-            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
-            color: white;
-        }
-        
-        .equal {
-            background: #6c757d;
-            color: white;
+            border-radius: 4px;
+            transition: width 0.3s ease;
         }
         
         .unit-label {
@@ -691,13 +693,29 @@
                     resultDiv.appendChild(lowUnitDiv);
                 }
                 
-                // Calculate percentage difference
+                // Calculate performance increase (only show if this GPU is better)
                 if (otherResult) {
-                    const percentDiff = calculatePercentageDifference(currentResult.score, otherResult.score);
-                    const diffDiv = document.createElement('div');
-                    diffDiv.className = `percentage-diff ${percentDiff.class}`;
-                    diffDiv.textContent = percentDiff.text;
-                    resultDiv.appendChild(diffDiv);
+                    const increase = calculatePerformanceIncrease(currentResult.score, otherResult.score);
+                    if (increase.percentage > 0) {
+                        const indicatorDiv = document.createElement('div');
+                        indicatorDiv.className = 'performance-indicator';
+                        
+                        const textDiv = document.createElement('div');
+                        textDiv.className = 'percentage-text';
+                        textDiv.textContent = increase.text;
+                        indicatorDiv.appendChild(textDiv);
+                        
+                        const barDiv = document.createElement('div');
+                        barDiv.className = 'performance-bar';
+                        
+                        const fillDiv = document.createElement('div');
+                        fillDiv.className = 'performance-fill';
+                        fillDiv.style.width = `${Math.min(increase.percentage, 100)}%`;
+                        barDiv.appendChild(fillDiv);
+                        
+                        indicatorDiv.appendChild(barDiv);
+                        resultDiv.appendChild(indicatorDiv);
+                    }
                 }
             } else {
                 const scoreDiv = document.createElement('div');
@@ -714,20 +732,24 @@
             return resultDiv;
         }
 
-        function calculatePercentageDifference(currentScore, otherScore) {
+        function calculatePerformanceIncrease(currentScore, otherScore) {
             if (currentScore === otherScore) {
-                return { class: 'equal', text: 'Equal' };
+                return { percentage: 0, text: '' };
             }
             
             // For FPS, higher is better
             const percentDiff = ((currentScore - otherScore) / otherScore) * 100;
-            const absPercent = Math.abs(percentDiff).toFixed(0);
             
-            if (currentScore > otherScore) {
-                return { class: 'better', text: `${absPercent}% better` };
-            } else {
-                return { class: 'worse', text: `${absPercent}% worse` };
+            // Only return positive values (improvements)
+            if (currentScore > otherScore && percentDiff > 0) {
+                const absPercent = Math.abs(percentDiff);
+                return { 
+                    percentage: absPercent, 
+                    text: `${absPercent.toFixed(0)}% increase` 
+                };
             }
+            
+            return { percentage: 0, text: '' };
         }
 
         // Add CSS for highlighted dropdown items
