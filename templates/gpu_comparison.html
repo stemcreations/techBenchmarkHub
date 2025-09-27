@@ -250,6 +250,10 @@
             document.getElementById('gpu1-name').textContent = selectedGpu1.name;
             document.getElementById('gpu2-name').textContent = selectedGpu2.name;
             
+            // Clear any existing overall performance indicators
+            document.getElementById('gpu1-info').innerHTML = `<h2 class="text-xl font-bold text-red-900 mb-2" id="gpu1-name">${selectedGpu1.name}</h2>`;
+            document.getElementById('gpu2-info').innerHTML = `<h2 class="text-xl font-bold text-orange-900 mb-2" id="gpu2-name">${selectedGpu2.name}</h2>`;
+            
             // Load benchmark data for both GPUs
             await loadBenchmarkComparison(selectedGpu1.id, selectedGpu2.id);
         }
@@ -284,12 +288,94 @@
                 // Group benchmarks by game and resolution
                 const groups = groupBenchmarks(Array.from(allBenchmarks), gpu1Results, gpu2Results);
                 
+                // Calculate and display overall performance comparison
+                calculateOverallPerformance(gpu1Results, gpu2Results, Array.from(allBenchmarks));
+                
                 // Display comparison
                 displayComparison(groups, gpu1Results, gpu2Results);
                 
             } catch (error) {
                 console.error('Error loading benchmark comparison:', error);
             }
+        }
+
+        function calculateOverallPerformance(gpu1Results, gpu2Results, allBenchmarks) {
+            // Get benchmarks where both GPUs have data
+            const commonBenchmarks = allBenchmarks.filter(name => 
+                gpu1Results[name] && gpu2Results[name] && 
+                gpu1Results[name].score && gpu2Results[name].score
+            );
+            
+            if (commonBenchmarks.length === 0) {
+                return; // No common benchmarks to compare
+            }
+            
+            // Calculate individual percentage differences
+            const percentageDifferences = [];
+            
+            commonBenchmarks.forEach(benchmarkName => {
+                const gpu1Score = gpu1Results[benchmarkName].score;
+                const gpu2Score = gpu2Results[benchmarkName].score;
+                
+                // Calculate percentage difference for each benchmark
+                const gpu1VsGpu2 = ((gpu1Score - gpu2Score) / gpu2Score) * 100;
+                const gpu2VsGpu1 = ((gpu2Score - gpu1Score) / gpu1Score) * 100;
+                
+                percentageDifferences.push({
+                    gpu1Advantage: gpu1VsGpu2,
+                    gpu2Advantage: gpu2VsGpu1
+                });
+            });
+            
+            // Calculate average percentage advantages
+            const avgGpu1Advantage = percentageDifferences.reduce((sum, diff) => sum + diff.gpu1Advantage, 0) / percentageDifferences.length;
+            const avgGpu2Advantage = percentageDifferences.reduce((sum, diff) => sum + diff.gpu2Advantage, 0) / percentageDifferences.length;
+            
+            // Determine which GPU is better overall and show indicator
+            if (avgGpu1Advantage > avgGpu2Advantage) {
+                // GPU 1 is better overall
+                showOverallPerformanceIndicator('gpu1-info', avgGpu1Advantage, commonBenchmarks.length);
+            } else if (avgGpu2Advantage > avgGpu1Advantage) {
+                // GPU 2 is better overall
+                showOverallPerformanceIndicator('gpu2-info', avgGpu2Advantage, commonBenchmarks.length);
+            }
+            // If they're equal, show nothing
+        }
+
+        function showOverallPerformanceIndicator(containerId, percentage, benchmarkCount) {
+            const container = document.getElementById(containerId);
+            
+            // Create overall performance indicator
+            const indicatorDiv = document.createElement('div');
+            indicatorDiv.className = 'mt-4 pt-4 border-t border-gray-300';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'text-sm font-semibold text-gray-700 mb-2';
+            titleDiv.textContent = `Overall Performance Advantage`;
+            indicatorDiv.appendChild(titleDiv);
+            
+            const percentageDiv = document.createElement('div');
+            percentageDiv.className = 'text-lg font-bold text-emerald-600 mb-2';
+            percentageDiv.textContent = `+${percentage.toFixed(1)}% average`;
+            indicatorDiv.appendChild(percentageDiv);
+            
+            // Progress bar
+            const progressBarContainer = document.createElement('div');
+            progressBarContainer.className = 'w-full h-3 bg-gray-200 rounded-full overflow-hidden mb-2';
+            
+            const progressBarFill = document.createElement('div');
+            progressBarFill.className = 'h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out';
+            progressBarFill.style.width = `${Math.min(percentage, 100)}%`;
+            progressBarContainer.appendChild(progressBarFill);
+            
+            indicatorDiv.appendChild(progressBarContainer);
+            
+            const detailDiv = document.createElement('div');
+            detailDiv.className = 'text-xs text-gray-500';
+            detailDiv.textContent = `Based on ${benchmarkCount} common benchmarks`;
+            indicatorDiv.appendChild(detailDiv);
+            
+            container.appendChild(indicatorDiv);
         }
 
         function groupBenchmarks(benchmarkNames, gpu1Results, gpu2Results) {
