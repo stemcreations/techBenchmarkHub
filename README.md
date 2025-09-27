@@ -181,19 +181,54 @@ For production deployment:
 
 ## Data Import
 
-The project includes utilities to import benchmark data from CSV files:
+The project includes utilities to import benchmark data from CSV files. Your CSV files must follow specific formats:
 
-```python
-from csv_importer import import_csv
+### CPU Benchmark CSV Format
 
-# Import CPU benchmark
-import_csv('path/to/cpu_data.csv', 'Benchmark Name', unit_type='fps', resolution='1080p')
-
-# Import GPU benchmark
-import_csv('path/to/gpu_data.csv', 'Game Title', unit_type='fps', resolution='1440p')
+```csv
+CPU_Model,Core_Count,Date,Score
+AMD R9 9950X Lexar 6000,(16C/32T),[8/24],204872
+Intel i9-14900K,(8P/16E/32T),[7/24],187566
+AMD R7 9700X,(8C/16T),[8/24],156420
 ```
 
-## Roadmap
+**Required Columns:**
+
+- `CPU_Model`: Full CPU name (extras like "Lexar 6000" will be cleaned)
+- `Core_Count`: Core configuration (e.g., "(8C/16T)" or "(8P/16E/32T)")
+- `Date`: Test date in format `[M/YY]` (e.g., `[8/24]`)
+- `Score`: Numerical performance score
+
+### GPU Benchmark CSV Format
+
+```csv
+GPU_Model,Date,AVG_FPS,1%_Low
+RTX 4090,(7/24),145.2,118.7
+RTX 4080,(7/24),128.4,105.1
+RTX 4070 Ti,(7/24),112.8,92.3
+```
+
+**Required Columns:**
+
+- `GPU_Model`: Full GPU name
+- `Date`: Test date in format `[M/YY]` (e.g., `[7/24]`)
+- `AVG_FPS`: Average frames per second
+- `1%_Low`: 1% low FPS value
+
+### Import Examples
+
+````python
+from csv_importer import import_csv
+
+# Import CPU productivity benchmark (no resolution)
+import_csv('7zip_compression.csv', 'Adobe Photoshop Puget Suite', unit_type='score')
+
+# Import CPU gaming benchmark (with resolution)
+import_csv('starfield_cpu_1080p.csv', 'Starfield CPU Performance', unit_type='fps', resolution='1080p')
+
+# Import GPU gaming benchmark (with resolution)
+import_csv('starfield_gpu_1440p.csv', 'Starfield GPU Ultra', unit_type='fps', resolution='1440p')
+```## Roadmap
 
 - [ ] Integration with hardware pricing APIs
 - [ ] Cost-to-performance analysis tools
@@ -226,3 +261,4 @@ Having issues or questions?
 ---
 
 **Made for the PC building community**
+````
