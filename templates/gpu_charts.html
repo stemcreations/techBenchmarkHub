@@ -5,262 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPU Benchmark Charts - Tech Benchmark Hub</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .header h1 {
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        
-        .back-btn {
-            position: absolute;
-            left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .filter-section {
-            padding: 20px 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .filter-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .filter-group label {
-            font-weight: bold;
-            color: #333;
-            font-size: 0.9em;
-        }
-        
-        .filter-select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: white;
-            font-size: 0.9em;
-        }
-        
-        .data-toggle {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .toggle-btn {
-            padding: 8px 16px;
-            border: 2px solid #667eea;
-            border-radius: 20px;
-            background: white;
-            color: #667eea;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s;
-        }
-        
-        .toggle-btn.active {
-            background: #667eea;
-            color: white;
-        }
-        
-        .charts-section {
-            padding: 30px;
-        }
-        
-        .loading {
-            text-align: center;
-            color: #666;
-            font-size: 1.1em;
-            margin: 50px 0;
-        }
-        
-        .benchmark-group {
-            margin-bottom: 50px;
-        }
-        
-        .group-title {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px 10px 0 0;
-            font-size: 1.4em;
-            font-weight: bold;
-            margin-bottom: 0;
-        }
-        
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 30px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 0 0 10px 10px;
-        }
-        
-        .chart-container {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .chart-header {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .chart-title {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        
-        .chart-description {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        
-        .chart-unit {
-            font-size: 0.8em;
-            color: #888;
-            font-style: italic;
-        }
-        
-        .chart-canvas {
-            position: relative;
-            height: 400px;
-        }
-        
-        .no-data {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-            padding: 40px;
-        }
-        
-        @media (max-width: 768px) {
-            .charts-grid {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
-            
-            .chart-container {
-                padding: 15px;
-            }
-            
-            .chart-canvas {
-                height: 300px;
-            }
-            
-            .filter-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .back-btn {
-                position: static;
-                transform: none;
-                margin-bottom: 15px;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ef4444',
+                        secondary: '#f97316'
+                    }
+                }
             }
         }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <a href="/" class="back-btn">← Back</a>
-            <h1>📈 GPU Benchmark Charts</h1>
-            <p>Browse all GPU benchmarks with interactive gaming performance charts</p>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-8 relative">
+            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2">
+                ← Back
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">📈 GPU Benchmark Charts</h1>
+            <p class="text-lg text-gray-600">Browse all GPU benchmarks with interactive gaming performance charts</p>
         </div>
         
-        <div class="filter-section">
-            <div class="filter-controls">
-                <div class="filter-group">
-                    <label for="resolution-filter">Resolution</label>
-                    <select id="resolution-filter" class="filter-select">
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="flex flex-col">
+                    <label for="resolution-filter" class="text-sm font-medium text-gray-700 mb-2">Resolution</label>
+                    <select id="resolution-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
                         <option value="">All Resolutions</option>
                         <option value="1080p">1080p</option>
                         <option value="1440p">1440p</option>
                         <option value="4K">4K</option>
                     </select>
                 </div>
-                <div class="filter-group">
-                    <label for="game-filter">Game</label>
-                    <select id="game-filter" class="filter-select">
+                <div class="flex flex-col">
+                    <label for="game-filter" class="text-sm font-medium text-gray-700 mb-2">Game</label>
+                    <select id="game-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
                         <option value="">All Games</option>
                     </select>
                 </div>
-                <div class="filter-group">
-                    <label for="sort-filter">Sort By</label>
-                    <select id="sort-filter" class="filter-select">
+                <div class="flex flex-col">
+                    <label for="sort-filter" class="text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                    <select id="sort-filter" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white">
                         <option value="name">Name</option>
                         <option value="results">Result Count</option>
                     </select>
                 </div>
-                <div class="filter-group">
-                    <label>Display Data</label>
-                    <div class="data-toggle">
-                        <button id="avg-fps-btn" class="toggle-btn active">Avg FPS</button>
-                        <button id="low-fps-btn" class="toggle-btn">1% Low</button>
-                        <button id="both-fps-btn" class="toggle-btn">Both</button>
+                <div class="flex flex-col">
+                    <label class="text-sm font-medium text-gray-700 mb-2">Display Data</label>
+                    <div class="flex gap-2">
+                        <button id="avg-fps-btn" class="flex-1 px-3 py-2 border border-primary text-primary bg-primary text-white rounded-md hover:bg-red-600 hover:border-red-600 transition-colors duration-200 text-sm font-medium">Avg FPS</button>
+                        <button id="low-fps-btn" class="flex-1 px-3 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-200 text-sm font-medium">1% Low</button>
+                        <button id="both-fps-btn" class="flex-1 px-3 py-2 border border-primary text-primary rounded-md hover:bg-primary hover:text-white transition-colors duration-200 text-sm font-medium">Both</button>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="charts-section">
-            <div id="loading" class="loading">
-                Loading GPU benchmarks...
+            <div id="loading" class="flex items-center justify-center py-16">
+                <div class="text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
+                    <p class="text-gray-600">Loading GPU benchmarks...</p>
+                </div>
             </div>
             
             <div id="charts-container"></div>
@@ -271,12 +80,39 @@
         let allBenchmarks = [];
         let chartInstances = [];
         let currentDataMode = 'avg'; // 'avg', 'low', 'both'
+        let chartObserver;
         
         // Load benchmarks on page load
         window.onload = function() {
             loadBenchmarks();
             setupFilters();
+            setupChartObserver();
         };
+
+        function setupChartObserver() {
+            // Create intersection observer to handle chart visibility
+            chartObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const canvas = entry.target.querySelector('canvas');
+                        if (canvas) {
+                            const chartId = canvas.id;
+                            const chart = chartInstances.find(c => c.canvas.id === chartId);
+                            if (chart) {
+                                // Force chart resize when it becomes visible
+                                setTimeout(() => {
+                                    chart.resize();
+                                    chart.update('none');
+                                }, 100);
+                            }
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '50px'
+            });
+        }
 
         function setupFilters() {
             const resolutionFilter = document.getElementById('resolution-filter');
@@ -296,9 +132,16 @@
         function setDataMode(mode) {
             currentDataMode = mode;
             
-            // Update button states
-            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`${mode === 'avg' ? 'avg-fps' : mode === 'low' ? 'low-fps' : 'both-fps'}-btn`).classList.add('active');
+            // Update button states - remove active styles from all buttons
+            document.querySelectorAll('#avg-fps-btn, #low-fps-btn, #both-fps-btn').forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('text-primary');
+            });
+            
+            // Add active styles to selected button
+            const activeBtn = document.getElementById(`${mode === 'avg' ? 'avg-fps' : mode === 'low' ? 'low-fps' : 'both-fps'}-btn`);
+            activeBtn.classList.add('bg-primary', 'text-white');
+            activeBtn.classList.remove('text-primary');
             
             // Refresh charts
             filterAndDisplayBenchmarks();
@@ -357,11 +200,17 @@
             chartInstances.forEach(chart => chart.destroy());
             chartInstances = [];
             
+            // Disconnect previous observers
+            if (chartObserver) {
+                chartObserver.disconnect();
+                setupChartObserver();
+            }
+            
             const container = document.getElementById('charts-container');
             container.innerHTML = '';
             
             if (benchmarks.length === 0) {
-                container.innerHTML = '<div class="no-data">No benchmarks match the selected filters</div>';
+                container.innerHTML = '<div class="text-center py-16 text-gray-500">No benchmarks match the selected filters</div>';
                 return;
             }
             
@@ -404,15 +253,15 @@
 
         function createBenchmarkGroup(groupName, benchmarks) {
             const groupDiv = document.createElement('div');
-            groupDiv.className = 'benchmark-group';
+            groupDiv.className = 'mb-12';
             
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'group-title';
+            titleDiv.className = 'text-2xl font-bold text-gray-900 mb-6 pb-2 border-b-2 border-primary';
             titleDiv.textContent = groupName;
             groupDiv.appendChild(titleDiv);
             
             const chartsGrid = document.createElement('div');
-            chartsGrid.className = 'charts-grid';
+            chartsGrid.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
             
             benchmarks.forEach(benchmark => {
                 const chartContainer = createChartContainer(benchmark);
@@ -425,21 +274,21 @@
 
         function createChartContainer(benchmark) {
             const container = document.createElement('div');
-            container.className = 'chart-container';
+            container.className = 'bg-white rounded-lg border border-gray-200 overflow-hidden';
             
             const header = document.createElement('div');
-            header.className = 'chart-header';
+            header.className = 'p-6 border-b border-gray-200';
             
             const title = document.createElement('div');
-            title.className = 'chart-title';
+            title.className = 'text-xl font-semibold text-gray-900 mb-2';
             title.textContent = benchmark.name;
             
             const description = document.createElement('div');
-            description.className = 'chart-description';
+            description.className = 'text-gray-600 mb-2';
             description.textContent = benchmark.description || 'GPU gaming performance benchmark';
             
             const unit = document.createElement('div');
-            unit.className = 'chart-unit';
+            unit.className = 'text-sm text-gray-500';
             unit.textContent = `${benchmark.resolution} gaming performance in FPS`;
             
             header.appendChild(title);
@@ -447,7 +296,8 @@
             header.appendChild(unit);
             
             const canvasContainer = document.createElement('div');
-            canvasContainer.className = 'chart-canvas';
+            canvasContainer.className = 'p-6';
+            canvasContainer.style.height = '400px';
             
             const canvas = document.createElement('canvas');
             canvas.id = `chart-${benchmark.id}`;
@@ -468,7 +318,7 @@
                 const data = await response.json();
                 
                 if (data.labels.length === 0) {
-                    canvas.parentElement.innerHTML = '<div class="no-data">No data available for this benchmark</div>';
+                    canvas.parentElement.innerHTML = '<div class="flex items-center justify-center h-64 text-gray-500">No data available for this benchmark</div>';
                     return;
                 }
                 
@@ -476,7 +326,7 @@
                 
             } catch (error) {
                 console.error('Error loading chart data:', error);
-                canvas.parentElement.innerHTML = '<div class="no-data">Error loading chart data</div>';
+                canvas.parentElement.innerHTML = '<div class="flex items-center justify-center h-64 text-red-500">Error loading chart data</div>';
             }
         }
 
@@ -520,6 +370,12 @@
                     indexAxis: 'y', // This makes it horizontal
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        onComplete: function() {
+                            // Ensure proper sizing after animation
+                            this.resize();
+                        }
+                    },
                     plugins: {
                         legend: {
                             display: currentDataMode === 'both'
@@ -555,6 +411,11 @@
             });
             
             chartInstances.push(chart);
+            
+            // Start observing the chart container for visibility changes
+            if (chartObserver) {
+                chartObserver.observe(canvas.closest('.bg-white'));
+            }
         }
     </script>
 </body>

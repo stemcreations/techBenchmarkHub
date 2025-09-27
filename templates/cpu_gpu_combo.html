@@ -4,323 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU + GPU Combo - Tech Benchmark Hub</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .header h1 {
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        
-        .back-btn {
-            position: absolute;
-            left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .selection-section {
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .combo-selectors {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 30px;
-            align-items: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .product-selector {
-            text-align: center;
-        }
-        
-        .product-selector h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .searchable-dropdown {
-            position: relative;
-            width: 100%;
-        }
-        
-        .dropdown-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            background: white;
-        }
-        
-        .dropdown-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .dropdown-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #667eea;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-        
-        .dropdown-item {
-            padding: 10px 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .dropdown-item:hover {
-            background: #f0f0f0;
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        
-        .plus-text {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .combo-section {
-            padding: 30px;
-        }
-        
-        .no-selection {
-            text-align: center;
-            color: #666;
-            font-size: 1.1em;
-            margin: 50px 0;
-        }
-        
-        .combo-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-        
-        .product-column {
-            background: #f8f9fa;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .column-header {
-            padding: 20px;
-            text-align: center;
-            color: white;
-        }
-        
-        .cpu-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .gpu-header {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-        }
-        
-        .column-header h2 {
-            margin-bottom: 10px;
-        }
-        
-        .column-content {
-            padding: 20px;
-            background: white;
-        }
-        
-        .benchmark-group {
-            margin-bottom: 30px;
-        }
-        
-        .group-title {
-            background: #333;
-            color: white;
-            padding: 12px 15px;
-            border-radius: 8px 8px 0 0;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-        
-        .benchmark-item {
-            padding: 15px;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-            background: white;
-        }
-        
-        .benchmark-item:last-child {
-            border-radius: 0 0 8px 8px;
-        }
-        
-        .benchmark-name {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .benchmark-result {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .score-display {
-            font-size: 1.4em;
-            font-weight: bold;
-            padding: 8px 15px;
-            border-radius: 6px;
-            color: white;
-        }
-        
-        .score-available {
-            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-        }
-        
-        .score-na {
-            background: #6c757d;
-        }
-        
-        .unit-label {
-            font-size: 0.9em;
-            color: #666;
-        }
-        
-        .low-fps {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #ff6b6b;
-            margin-top: 5px;
-        }
-        
-        @media (max-width: 1024px) {
-            .combo-layout {
-                grid-template-columns: 1fr;
-                gap: 20px;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#6366f1'
+                    }
+                }
             }
         }
-        
-        @media (max-width: 768px) {
-            .combo-selectors {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .plus-text {
-                order: -1;
-            }
-            
-            .back-btn {
-                position: static;
-                transform: none;
-                margin-bottom: 15px;
-            }
-        }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <a href="/" class="back-btn">← Back</a>
-            <h1>⚡ CPU + GPU Combo</h1>
-            <p>View CPU and GPU performance side by side</p>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-8 relative">
+            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2">
+                ← Back
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">⚡ CPU + GPU Combo</h1>
+            <p class="text-lg text-gray-600">View CPU and GPU performance side by side</p>
         </div>
         
-        <div class="selection-section">
-            <div class="combo-selectors">
-                <div class="product-selector">
-                    <h3>💻 Select CPU</h3>
-                    <div class="searchable-dropdown">
-                        <input type="text" id="cpu-input" class="dropdown-input" placeholder="Type to search CPUs..." readonly>
-                        <div id="cpu-list" class="dropdown-list"></div>
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-3">
+                    <h3 class="text-lg font-semibold text-gray-900">💻 Select CPU</h3>
+                    <div class="relative">
+                        <input type="text" id="cpu-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search CPUs..." readonly>
+                        <div id="cpu-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     </div>
                 </div>
                 
-                <div class="plus-text">+</div>
+                <div class="text-center">
+                    <div class="bg-purple-100 text-purple-800 font-bold text-xl px-6 py-3 rounded-full inline-block">+</div>
+                </div>
                 
-                <div class="product-selector">
-                    <h3>🎮 Select GPU</h3>
-                    <div class="searchable-dropdown">
-                        <input type="text" id="gpu-input" class="dropdown-input" placeholder="Type to search GPUs..." readonly>
-                        <div id="gpu-list" class="dropdown-list"></div>
+                <div class="space-y-3">
+                    <h3 class="text-lg font-semibold text-gray-900">🎮 Select GPU</h3>
+                    <div class="relative">
+                        <input type="text" id="gpu-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search GPUs..." readonly>
+                        <div id="gpu-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="combo-section">
-            <div id="no-selection" class="no-selection">
-                Select a CPU and GPU above to see their individual performance data
+        <div class="space-y-6">
+            <div id="no-selection" class="bg-white rounded-xl shadow-md p-12 text-center border border-gray-200">
+                <div class="text-gray-400 text-6xl mb-4">⚡</div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Select Components</h3>
+                <p class="text-gray-600">Choose a CPU and GPU above to see their individual performance data side by side</p>
             </div>
             
-            <div id="combo-results" class="combo-layout" style="display: none;">
-                <div class="product-column">
-                    <div class="column-header cpu-header">
-                        <h2 id="cpu-name">CPU Performance</h2>
-                        <p id="cpu-cores">-</p>
+            <div id="combo-results" class="grid grid-cols-1 lg:grid-cols-2 gap-6" style="display: none;">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                    <div class="bg-blue-600 text-white px-6 py-4">
+                        <h2 class="text-xl font-bold" id="cpu-name">CPU Performance</h2>
+                        <p class="text-blue-100" id="cpu-cores">-</p>
                     </div>
-                    <div class="column-content" id="cpu-benchmarks">
-                        <div class="no-selection">No CPU selected</div>
+                    <div class="p-6" id="cpu-benchmarks">
+                        <div class="text-center text-gray-500 py-8">No CPU selected</div>
                     </div>
                 </div>
                 
-                <div class="product-column">
-                    <div class="column-header gpu-header">
-                        <h2 id="gpu-name">GPU Performance</h2>
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                    <div class="bg-red-600 text-white px-6 py-4">
+                        <h2 class="text-xl font-bold" id="gpu-name">GPU Performance</h2>
                     </div>
-                    <div class="column-content" id="gpu-benchmarks">
-                        <div class="no-selection">No GPU selected</div>
+                    <div class="p-6" id="gpu-benchmarks">
+                        <div class="text-center text-gray-500 py-8">No GPU selected</div>
                     </div>
                 </div>
             </div>
@@ -415,11 +170,11 @@
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     const next = current ? current.nextElementSibling : items[0];
-                    if (next) highlightItem(next);
+                    if (next) highlightItem(next, id);
                 } else if (e.key === 'ArrowUp') {
                     e.preventDefault();
                     const prev = current ? current.previousElementSibling : items[items.length - 1];
-                    if (prev) highlightItem(prev);
+                    if (prev) highlightItem(prev, id);
                 } else if (e.key === 'Enter') {
                     e.preventDefault();
                     if (current) {
@@ -434,20 +189,20 @@
 
         function showDropdown(list, items, input, onSelect, id) {
             list.innerHTML = '';
-            list.style.display = 'block';
+            list.classList.remove('hidden');
             
             if (items.length === 0) {
                 const noResults = document.createElement('div');
-                noResults.className = 'dropdown-item';
+                noResults.className = 'px-4 py-3 text-gray-500 text-sm';
                 noResults.textContent = `No ${id.toUpperCase()}s found`;
-                noResults.style.color = '#999';
                 list.appendChild(noResults);
                 return;
             }
             
             items.slice(0, 20).forEach((item, index) => { // Limit to 20 results
                 const div = document.createElement('div');
-                div.className = 'dropdown-item';
+                const hoverColor = id === 'cpu' ? 'hover:bg-blue-50 hover:text-blue-900' : 'hover:bg-red-50 hover:text-red-900';
+                div.className = `px-4 py-3 cursor-pointer text-gray-900 ${hoverColor} transition-colors duration-150 border-b border-gray-100 last:border-b-0`;
                 div.textContent = item.name;
                 div.addEventListener('click', () => {
                     selectItem(input, item, onSelect, id);
@@ -455,23 +210,27 @@
                 });
                 list.appendChild(div);
                 
-                if (index === 0) highlightItem(div);
+                if (index === 0) highlightItem(div, id);
             });
         }
 
         function hideDropdown(list) {
-            list.style.display = 'none';
+            list.classList.add('hidden');
         }
 
-        function highlightItem(item) {
+        function highlightItem(item, id) {
             // Remove previous highlight
             const prev = item.parentElement.querySelector('.highlighted');
-            if (prev) prev.classList.remove('highlighted');
+            if (prev) {
+                prev.classList.remove('highlighted', 'bg-blue-500', 'bg-red-500', 'text-white');
+                const hoverColor = id === 'cpu' ? 'hover:bg-blue-50 hover:text-blue-900' : 'hover:bg-red-50 hover:text-red-900';
+                prev.className = `px-4 py-3 cursor-pointer text-gray-900 ${hoverColor} transition-colors duration-150 border-b border-gray-100 last:border-b-0`;
+            }
             
             // Add highlight
-            item.classList.add('highlighted');
-            item.style.backgroundColor = '#667eea';
-            item.style.color = 'white';
+            const bgColor = id === 'cpu' ? 'bg-blue-500' : 'bg-red-500';
+            item.classList.add('highlighted', bgColor, 'text-white');
+            item.classList.remove('hover:bg-blue-50', 'hover:text-blue-900', 'hover:bg-red-50', 'hover:text-red-900');
         }
 
         function selectItem(input, item, onSelect, id) {
@@ -502,7 +261,7 @@
             } else {
                 document.getElementById('cpu-name').textContent = 'CPU Performance';
                 document.getElementById('cpu-cores').textContent = '-';
-                document.getElementById('cpu-benchmarks').innerHTML = '<div class="no-selection">No CPU selected</div>';
+                document.getElementById('cpu-benchmarks').innerHTML = '<div class="text-center text-gray-500 py-8">No CPU selected</div>';
             }
             
             // Update GPU section
@@ -511,7 +270,7 @@
                 await loadProductBenchmarks(selectedGpu.id, 'gpu');
             } else {
                 document.getElementById('gpu-name').textContent = 'GPU Performance';
-                document.getElementById('gpu-benchmarks').innerHTML = '<div class="no-selection">No GPU selected</div>';
+                document.getElementById('gpu-benchmarks').innerHTML = '<div class="text-center text-gray-500 py-8">No GPU selected</div>';
             }
         }
 
@@ -587,66 +346,137 @@
 
         function createBenchmarkGroup(groupTitle, benchmarks, type) {
             const groupDiv = document.createElement('div');
-            groupDiv.className = 'benchmark-group';
+            groupDiv.className = 'mb-6';
             
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'group-title';
+            const bgColor = type === 'cpu' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800';
+            titleDiv.className = `${bgColor} px-4 py-2 rounded-lg font-semibold text-sm mb-3`;
             titleDiv.textContent = groupTitle;
             groupDiv.appendChild(titleDiv);
             
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'space-y-3';
+            
             benchmarks.forEach(benchmark => {
                 const benchmarkDiv = createBenchmarkItem(benchmark, type);
-                groupDiv.appendChild(benchmarkDiv);
+                contentDiv.appendChild(benchmarkDiv);
             });
             
+            groupDiv.appendChild(contentDiv);
             return groupDiv;
         }
 
         function createBenchmarkItem(benchmark, type) {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'benchmark-item';
+            itemDiv.className = 'bg-gray-50 rounded-lg p-4 border border-gray-200';
             
             const nameDiv = document.createElement('div');
-            nameDiv.className = 'benchmark-name';
+            nameDiv.className = 'font-medium text-gray-900 mb-3 text-sm';
             nameDiv.textContent = benchmark.benchmark_name + (benchmark.resolution ? ` (${benchmark.resolution})` : '');
             itemDiv.appendChild(nameDiv);
             
-            const resultDiv = document.createElement('div');
-            resultDiv.className = 'benchmark-result';
+            // Calculate proportional bar width
+            let maxScale;
+            let barWidth;
             
-            const scoreDiv = document.createElement('div');
-            scoreDiv.className = 'score-display score-available';
-            scoreDiv.textContent = benchmark.score.toFixed(1);
-            
-            const unitDiv = document.createElement('div');
-            unitDiv.className = 'unit-label';
-            unitDiv.textContent = benchmark.unit_type;
-            
-            resultDiv.appendChild(scoreDiv);
-            resultDiv.appendChild(unitDiv);
-            
-            // Add 1% low for GPU benchmarks
-            if (type === 'gpu' && benchmark.score_1_percent_low) {
-                const lowFpsDiv = document.createElement('div');
-                lowFpsDiv.className = 'low-fps';
-                lowFpsDiv.textContent = `1% Low: ${benchmark.score_1_percent_low.toFixed(1)} FPS`;
-                resultDiv.appendChild(lowFpsDiv);
+            if (type === 'gpu') {
+                // For GPU benchmarks, typical FPS range from 30-200+
+                maxScale = 250;
+                barWidth = Math.max((benchmark.score / maxScale) * 100, 20);
+            } else {
+                // For CPU benchmarks, handle different unit types
+                if (benchmark.unit_type === 'seconds') {
+                    // For time-based: lower is better, use inverted scale
+                    maxScale = 60; // Assume max reasonable time is 60 seconds
+                    barWidth = Math.max(100 - ((benchmark.score / maxScale) * 100), 20);
+                } else {
+                    // For score-based: higher is better
+                    maxScale = Math.max(benchmark.score * 1.5, 100); // Dynamic scale
+                    barWidth = Math.max((benchmark.score / maxScale) * 100, 20);
+                }
             }
             
-            itemDiv.appendChild(resultDiv);
+            if (type === 'gpu' && benchmark.score_1_percent_low) {
+                // GPU with touching bars layout
+                
+                // Average FPS Label (above bars)
+                const avgFpsLabel = document.createElement('div');
+                const labelColor = type === 'cpu' ? 'text-blue-700' : 'text-red-700';
+                avgFpsLabel.className = `text-xs font-medium ${labelColor} mb-1`;
+                avgFpsLabel.textContent = 'Average FPS';
+                itemDiv.appendChild(avgFpsLabel);
+                
+                // Average FPS Bar (top bar)
+                const avgFpsContainer = document.createElement('div');
+                avgFpsContainer.className = 'relative';
+                
+                const avgFpsBackground = document.createElement('div');
+                avgFpsBackground.className = 'w-full h-6 bg-gray-200 rounded-t-md';
+                avgFpsContainer.appendChild(avgFpsBackground);
+                
+                const avgFpsDiv = document.createElement('div');
+                const barColor = type === 'cpu' ? 'bg-blue-500' : 'bg-red-500';
+                avgFpsDiv.className = `absolute top-0 left-0 h-6 ${barColor} rounded-t-md flex items-center justify-end pr-2 text-white font-semibold text-xs transition-all duration-300`;
+                avgFpsDiv.textContent = benchmark.score.toFixed(1);
+                avgFpsDiv.style.width = `${barWidth}%`;
+                avgFpsContainer.appendChild(avgFpsDiv);
+                
+                itemDiv.appendChild(avgFpsContainer);
+                
+                // 1% Low FPS Bar (bottom bar, touching)
+                const lowFpsContainer = document.createElement('div');
+                lowFpsContainer.className = 'relative';
+                
+                const lowFpsBackground = document.createElement('div');
+                lowFpsBackground.className = 'w-full h-6 bg-gray-200 rounded-b-md';
+                lowFpsContainer.appendChild(lowFpsBackground);
+                
+                const lowFpsDiv = document.createElement('div');
+                const lowBarColor = type === 'cpu' ? 'bg-blue-400' : 'bg-red-400';
+                lowFpsDiv.className = `absolute top-0 left-0 h-6 ${lowBarColor} rounded-b-md flex items-center justify-end pr-2 text-white font-semibold text-xs transition-all duration-300`;
+                lowFpsDiv.textContent = benchmark.score_1_percent_low.toFixed(1);
+                
+                const lowFpsWidth = Math.max((benchmark.score_1_percent_low / maxScale) * 100, 18);
+                lowFpsDiv.style.width = `${lowFpsWidth}%`;
+                lowFpsContainer.appendChild(lowFpsDiv);
+                
+                itemDiv.appendChild(lowFpsContainer);
+                
+                // 1% Low FPS Label (below bars)
+                const lowFpsLabel = document.createElement('div');
+                lowFpsLabel.className = `text-xs font-medium ${labelColor} mt-1`;
+                lowFpsLabel.textContent = '1% Low FPS';
+                itemDiv.appendChild(lowFpsLabel);
+                
+            } else {
+                // Single bar layout (CPU or GPU without 1% low)
+                const unitLabel = document.createElement('div');
+                const labelColor = type === 'cpu' ? 'text-blue-700' : 'text-red-700';
+                unitLabel.className = `text-xs font-medium ${labelColor} mb-1`;
+                unitLabel.textContent = benchmark.unit_type;
+                itemDiv.appendChild(unitLabel);
+                
+                const scoreContainer = document.createElement('div');
+                scoreContainer.className = 'relative';
+                
+                const scoreBackground = document.createElement('div');
+                scoreBackground.className = 'w-full h-6 bg-gray-200 rounded-md';
+                scoreContainer.appendChild(scoreBackground);
+                
+                const scoreDiv = document.createElement('div');
+                const barColor = type === 'cpu' ? 'bg-blue-500' : 'bg-red-500';
+                scoreDiv.className = `absolute top-0 left-0 h-6 ${barColor} rounded-md flex items-center justify-end pr-2 text-white font-semibold text-xs transition-all duration-300`;
+                scoreDiv.textContent = benchmark.score.toFixed(1);
+                scoreDiv.style.width = `${barWidth}%`;
+                scoreContainer.appendChild(scoreDiv);
+                
+                itemDiv.appendChild(scoreContainer);
+            }
             
             return itemDiv;
         }
 
-        // Add CSS for highlighted dropdown items
-        const style = document.createElement('style');
-        style.textContent = `
-            .dropdown-item.highlighted {
-                background-color: #667eea !important;
-                color: white !important;
-            }
-        `;
-        document.head.appendChild(style);
+        // Tailwind handles all styling - no additional CSS needed
     </script>
 </body>
 </html>

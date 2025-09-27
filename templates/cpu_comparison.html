@@ -4,339 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CPU Comparison - Tech Benchmark Hub</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        
-        .back-btn {
-            position: absolute;
-            left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .selection-section {
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .cpu-selectors {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 30px;
-            align-items: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .cpu-selector {
-            text-align: center;
-        }
-        
-        .cpu-selector h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .searchable-dropdown {
-            position: relative;
-            width: 100%;
-        }
-        
-        .dropdown-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            background: white;
-        }
-        
-        .dropdown-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .dropdown-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #667eea;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-        
-        .dropdown-item {
-            padding: 10px 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .dropdown-item:hover {
-            background: #f0f0f0;
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        
-        .dropdown-placeholder {
-            color: #999;
-        }
-        
-        .vs-text {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .comparison-section {
-            padding: 30px;
-        }
-        
-        .no-selection {
-            text-align: center;
-            color: #666;
-            font-size: 1.1em;
-            margin: 50px 0;
-        }
-        
-        .comparison-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .cpu-info {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .cpu-info h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .cpu-info p {
-            color: #666;
-        }
-        
-        .benchmark-group {
-            margin-bottom: 40px;
-        }
-        
-        .group-title {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px 10px 0 0;
-            font-size: 1.3em;
-            font-weight: bold;
-        }
-        
-        .benchmark-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 20px;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-            background: white;
-        }
-        
-        .benchmark-item:last-child {
-            border-radius: 0 0 10px 10px;
-        }
-        
-        .benchmark-name {
-            grid-column: 1 / -1;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
-        }
-        
-        .cpu-result {
-            text-align: center;
-        }
-        
-        .score-display {
-            font-size: 1.8em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            padding: 15px;
-            border-radius: 8px;
-            color: white;
-        }
-        
-        .score-available {
-            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-        }
-        
-        .score-na {
-            background: #6c757d;
-            color: #fff;
-        }
-        
-        .performance-indicator {
-            margin-top: 15px;
-        }
-        
-        .percentage-text {
-            font-size: 0.9em;
-            font-weight: bold;
-            color: #28a745;
-            margin-bottom: 5px;
-        }
-        
-        .performance-bar {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .performance-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .unit-label {
-            font-size: 0.8em;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        @media (max-width: 768px) {
-            .cpu-selectors {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .vs-text {
-                order: -1;
-            }
-            
-            .comparison-header {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .benchmark-item {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .back-btn {
-                position: static;
-                transform: none;
-                margin-bottom: 15px;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#6366f1'
+                    }
+                }
             }
         }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <a href="/" class="back-btn">← Back</a>
-            <h1>💻 CPU Comparison</h1>
-            <p>Compare two CPUs across all available benchmarks</p>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-8 relative">
+            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2">
+                ← Back
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">💻 CPU Comparison</h1>
+            <p class="text-lg text-gray-600">Compare two CPUs across all available benchmarks</p>
         </div>
         
-        <div class="selection-section">
-            <div class="cpu-selectors">
-                <div class="cpu-selector">
-                    <h3>CPU 1</h3>
-                    <div class="searchable-dropdown">
-                        <input type="text" id="cpu1-input" class="dropdown-input" placeholder="Type to search CPUs..." readonly>
-                        <div id="cpu1-list" class="dropdown-list"></div>
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-3">
+                    <h3 class="text-lg font-semibold text-gray-900">CPU 1</h3>
+                    <div class="relative">
+                        <input type="text" id="cpu1-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search CPUs..." readonly>
+                        <div id="cpu1-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     </div>
                 </div>
                 
-                <div class="vs-text">VS</div>
+                <div class="text-center">
+                    <div class="bg-blue-100 text-blue-800 font-bold text-xl px-6 py-3 rounded-full inline-block">VS</div>
+                </div>
                 
-                <div class="cpu-selector">
-                    <h3>CPU 2</h3>
-                    <div class="searchable-dropdown">
-                        <input type="text" id="cpu2-input" class="dropdown-input" placeholder="Type to search CPUs..." readonly>
-                        <div id="cpu2-list" class="dropdown-list"></div>
+                <div class="space-y-3">
+                    <h3 class="text-lg font-semibold text-gray-900">CPU 2</h3>
+                    <div class="relative">
+                        <input type="text" id="cpu2-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search CPUs..." readonly>
+                        <div id="cpu2-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="comparison-section">
-            <div id="no-selection" class="no-selection">
-                Select two CPUs above to see their comparison
+        <div class="space-y-6">
+            <div id="no-selection" class="bg-white rounded-xl shadow-md p-12 text-center border border-gray-200">
+                <div class="text-gray-400 text-6xl mb-4">🔍</div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Select CPUs to Compare</h3>
+                <p class="text-gray-600">Choose two CPUs above to see their detailed benchmark comparison</p>
             </div>
             
             <div id="comparison-results" style="display: none;">
-                <div class="comparison-header">
-                    <div class="cpu-info" id="cpu1-info">
-                        <h2 id="cpu1-name">-</h2>
-                        <p id="cpu1-cores">-</p>
-                    </div>
-                    <div class="cpu-info" id="cpu2-info">
-                        <h2 id="cpu2-name">-</h2>
-                        <p id="cpu2-cores">-</p>
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200" id="cpu1-info">
+                            <h2 class="text-xl font-bold text-blue-900 mb-2" id="cpu1-name">-</h2>
+                            <p class="text-blue-700" id="cpu1-cores">-</p>
+                        </div>
+                        <div class="text-center p-4 bg-indigo-50 rounded-lg border border-indigo-200" id="cpu2-info">
+                            <h2 class="text-xl font-bold text-indigo-900 mb-2" id="cpu2-name">-</h2>
+                            <p class="text-indigo-700" id="cpu2-cores">-</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div id="benchmark-groups"></div>
+                <div id="benchmark-groups" class="space-y-6"></div>
             </div>
         </div>
     </div>
@@ -441,20 +178,19 @@
 
         function showDropdown(list, items, input, onSelect, id) {
             list.innerHTML = '';
-            list.style.display = 'block';
+            list.classList.remove('hidden');
             
             if (items.length === 0) {
                 const noResults = document.createElement('div');
-                noResults.className = 'dropdown-item';
+                noResults.className = 'px-4 py-3 text-gray-500 text-sm';
                 noResults.textContent = 'No CPUs found';
-                noResults.style.color = '#999';
                 list.appendChild(noResults);
                 return;
             }
             
             items.slice(0, 20).forEach((item, index) => { // Limit to 20 results
                 const div = document.createElement('div');
-                div.className = 'dropdown-item';
+                div.className = 'px-4 py-3 cursor-pointer text-gray-900 hover:bg-blue-50 hover:text-blue-900 transition-colors duration-150 border-b border-gray-100 last:border-b-0';
                 div.textContent = item.name;
                 div.addEventListener('click', () => {
                     selectItem(input, item, onSelect, id);
@@ -467,18 +203,20 @@
         }
 
         function hideDropdown(list) {
-            list.style.display = 'none';
+            list.classList.add('hidden');
         }
 
         function highlightItem(item) {
             // Remove previous highlight
             const prev = item.parentElement.querySelector('.highlighted');
-            if (prev) prev.classList.remove('highlighted');
+            if (prev) {
+                prev.classList.remove('highlighted', 'bg-blue-500', 'text-white');
+                prev.classList.add('hover:bg-blue-50', 'hover:text-blue-900');
+            }
             
             // Add highlight
-            item.classList.add('highlighted');
-            item.style.backgroundColor = '#667eea';
-            item.style.color = 'white';
+            item.classList.add('highlighted', 'bg-blue-500', 'text-white');
+            item.classList.remove('hover:bg-blue-50', 'hover:text-blue-900');
         }
 
         function selectItem(input, item, onSelect, id) {
@@ -603,75 +341,115 @@
 
         function createBenchmarkGroup(groupTitle, benchmarks, cpu1Results, cpu2Results) {
             const groupDiv = document.createElement('div');
-            groupDiv.className = 'benchmark-group';
+            groupDiv.className = 'bg-white rounded-xl shadow-md overflow-hidden border border-gray-200';
             
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'group-title';
+            titleDiv.className = 'bg-gray-800 text-white px-6 py-4 font-semibold text-lg';
             titleDiv.textContent = groupTitle;
             groupDiv.appendChild(titleDiv);
             
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'divide-y divide-gray-200';
+            
             benchmarks.forEach(benchmarkName => {
                 const benchmarkDiv = createBenchmarkItem(benchmarkName, cpu1Results, cpu2Results);
-                groupDiv.appendChild(benchmarkDiv);
+                contentDiv.appendChild(benchmarkDiv);
             });
             
+            groupDiv.appendChild(contentDiv);
             return groupDiv;
         }
 
         function createBenchmarkItem(benchmarkName, cpu1Results, cpu2Results) {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'benchmark-item';
+            itemDiv.className = 'p-6';
             
             // Benchmark name
             const nameDiv = document.createElement('div');
-            nameDiv.className = 'benchmark-name';
+            nameDiv.className = 'text-lg font-medium text-gray-900 mb-4';
             const benchmarkInfo = cpu1Results[benchmarkName] || cpu2Results[benchmarkName];
             nameDiv.textContent = benchmarkName + (benchmarkInfo ? ` (${benchmarkInfo.unit_type})` : '');
             itemDiv.appendChild(nameDiv);
             
+            // Results container
+            const resultsDiv = document.createElement('div');
+            resultsDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+            
             // CPU 1 result
             const cpu1ResultDiv = createCPUResult(cpu1Results[benchmarkName], cpu2Results[benchmarkName], true);
-            itemDiv.appendChild(cpu1ResultDiv);
+            resultsDiv.appendChild(cpu1ResultDiv);
             
             // CPU 2 result
             const cpu2ResultDiv = createCPUResult(cpu2Results[benchmarkName], cpu1Results[benchmarkName], false);
-            itemDiv.appendChild(cpu2ResultDiv);
+            resultsDiv.appendChild(cpu2ResultDiv);
             
+            itemDiv.appendChild(resultsDiv);
             return itemDiv;
         }
 
         function createCPUResult(currentResult, otherResult, isFirst) {
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'cpu-result';
+            resultDiv.className = `p-4 rounded-lg border-2 ${isFirst ? 'bg-blue-50 border-blue-200' : 'bg-indigo-50 border-indigo-200'}`;
             
             if (currentResult) {
-                const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'score-display score-available';
-                scoreDiv.textContent = currentResult.score.toFixed(1);
-                resultDiv.appendChild(scoreDiv);
+                // Calculate max score for proportional bars
+                let maxScore = currentResult.score;
+                if (otherResult && otherResult.score > maxScore) {
+                    maxScore = otherResult.score;
+                }
                 
+                // For time-based metrics (seconds), we want shorter bars to represent better performance
+                // For other metrics (fps, points), longer bars represent better performance
+                let barWidth;
+                if (currentResult.unit_type === 'seconds') {
+                    // For time: lower is better, so invert the scale
+                    const maxTime = Math.max(currentResult.score, otherResult ? otherResult.score : currentResult.score) * 1.1;
+                    barWidth = Math.max(100 - ((currentResult.score / maxTime) * 100), 20);
+                } else {
+                    // For scores/fps: higher is better
+                    maxScore = maxScore * 1.1;
+                    barWidth = Math.max((currentResult.score / maxScore) * 100, 20);
+                }
+                
+                // Unit label above the bar
                 const unitDiv = document.createElement('div');
-                unitDiv.className = 'unit-label';
+                unitDiv.className = `text-sm font-medium ${isFirst ? 'text-blue-700' : 'text-indigo-700'} mb-2`;
                 unitDiv.textContent = currentResult.unit_type;
                 resultDiv.appendChild(unitDiv);
+                
+                // Score Bar Container
+                const scoreContainer = document.createElement('div');
+                scoreContainer.className = 'relative mb-3';
+                
+                const scoreBackground = document.createElement('div');
+                scoreBackground.className = 'w-full h-8 bg-gray-200 rounded-md';
+                scoreContainer.appendChild(scoreBackground);
+                
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-blue-500' : 'bg-indigo-500'} rounded-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                scoreDiv.textContent = currentResult.score.toFixed(1);
+                scoreDiv.style.width = `${barWidth}%`;
+                scoreContainer.appendChild(scoreDiv);
+                
+                resultDiv.appendChild(scoreContainer);
                 
                 // Calculate performance increase (only show if this CPU is better)
                 if (otherResult) {
                     const increase = calculatePerformanceIncrease(currentResult.score, otherResult.score, currentResult.unit_type);
                     if (increase.percentage > 0) {
                         const indicatorDiv = document.createElement('div');
-                        indicatorDiv.className = 'performance-indicator';
+                        indicatorDiv.className = 'space-y-1';
                         
                         const textDiv = document.createElement('div');
-                        textDiv.className = 'percentage-text';
+                        textDiv.className = 'text-xs font-semibold text-emerald-600';
                         textDiv.textContent = increase.text;
                         indicatorDiv.appendChild(textDiv);
                         
                         const barDiv = document.createElement('div');
-                        barDiv.className = 'performance-bar';
+                        barDiv.className = 'w-full h-2 bg-gray-200 rounded-full overflow-hidden';
                         
                         const fillDiv = document.createElement('div');
-                        fillDiv.className = 'performance-fill';
+                        fillDiv.className = 'h-full bg-emerald-500 rounded-full transition-all duration-500';
                         fillDiv.style.width = `${Math.min(increase.percentage, 100)}%`;
                         barDiv.appendChild(fillDiv);
                         
@@ -680,13 +458,23 @@
                     }
                 }
             } else {
+                // No data available
+                const scoreContainer = document.createElement('div');
+                scoreContainer.className = 'relative mb-3';
+                
+                const scoreBackground = document.createElement('div');
+                scoreBackground.className = 'w-full h-8 bg-gray-200 rounded-md';
+                scoreContainer.appendChild(scoreBackground);
+                
                 const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'score-display score-na';
+                scoreDiv.className = 'absolute top-0 left-0 w-full h-8 bg-gray-400 rounded-md flex items-center justify-center text-white font-semibold text-sm';
                 scoreDiv.textContent = 'N/A';
-                resultDiv.appendChild(scoreDiv);
+                scoreContainer.appendChild(scoreDiv);
+                
+                resultDiv.appendChild(scoreContainer);
                 
                 const unitDiv = document.createElement('div');
-                unitDiv.className = 'unit-label';
+                unitDiv.className = 'text-sm text-gray-600';
                 unitDiv.textContent = 'No data available';
                 resultDiv.appendChild(unitDiv);
             }
@@ -724,15 +512,7 @@
             return { percentage: 0, text: '' };
         }
 
-        // Add CSS for highlighted dropdown items
-        const style = document.createElement('style');
-        style.textContent = `
-            .dropdown-item.highlighted {
-                background-color: #667eea !important;
-                color: white !important;
-            }
-        `;
-        document.head.appendChild(style);
+        // Tailwind handles all styling - no additional CSS needed
     </script>
 </body>
 </html>

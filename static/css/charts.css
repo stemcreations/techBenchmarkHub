@@ -1,0 +1,163 @@
+/* Charts pages (CPU & GPU) specific styles */
+
+.filter-section {
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9em;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    font-size: 0.9em;
+}
+
+/* GPU specific - data toggle */
+.data-toggle {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.toggle-btn {
+    padding: 8px 16px;
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    background: white;
+    color: #667eea;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: all 0.3s;
+}
+
+.toggle-btn.active {
+    background: #667eea;
+    color: white;
+}
+
+.charts-section {
+    padding: 30px;
+}
+
+.loading {
+    text-align: center;
+    color: #666;
+    font-size: 1.1em;
+    margin: 50px 0;
+}
+
+.benchmark-group {
+    margin-bottom: 50px;
+}
+
+.group-title {
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px 10px 0 0;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+/* CPU charts - blue gradient */
+.cpu-charts .group-title {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* GPU charts - red gradient */
+.gpu-charts .group-title {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 30px;
+    padding: 30px;
+    background: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.chart-header {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.chart-title {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.chart-description {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.chart-unit {
+    font-size: 0.8em;
+    color: #888;
+    font-style: italic;
+}
+
+.chart-canvas {
+    position: relative;
+    height: 400px;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px;
+}
+
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+        padding: 15px;
+    }
+    
+    .chart-container {
+        padding: 15px;
+    }
+    
+    .chart-canvas {
+        height: 300px;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

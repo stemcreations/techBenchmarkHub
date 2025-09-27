@@ -4,347 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPU Comparison - Tech Benchmark Hub</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.2em;
-            margin-bottom: 10px;
-        }
-        
-        .back-btn {
-            position: absolute;
-            left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 25px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        
-        .selection-section {
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .gpu-selectors {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 30px;
-            align-items: center;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .gpu-selector {
-            text-align: center;
-        }
-        
-        .gpu-selector h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-        
-        .searchable-dropdown {
-            position: relative;
-            width: 100%;
-        }
-        
-        .dropdown-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            background: white;
-        }
-        
-        .dropdown-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        
-        .dropdown-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #667eea;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-        
-        .dropdown-item {
-            padding: 10px 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .dropdown-item:hover {
-            background: #f0f0f0;
-        }
-        
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        
-        .dropdown-placeholder {
-            color: #999;
-        }
-        
-        .vs-text {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .comparison-section {
-            padding: 30px;
-        }
-        
-        .no-selection {
-            text-align: center;
-            color: #666;
-            font-size: 1.1em;
-            margin: 50px 0;
-        }
-        
-        .comparison-header {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        
-        .gpu-info {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .gpu-info h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        
-        .benchmark-group {
-            margin-bottom: 40px;
-        }
-        
-        .group-title {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px 10px 0 0;
-            font-size: 1.3em;
-            font-weight: bold;
-        }
-        
-        .benchmark-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            padding: 20px;
-            border-left: 1px solid #ddd;
-            border-right: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-            background: white;
-        }
-        
-        .benchmark-item:last-child {
-            border-radius: 0 0 10px 10px;
-        }
-        
-        .benchmark-name {
-            grid-column: 1 / -1;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
-        }
-        
-        .gpu-result {
-            text-align: center;
-        }
-        
-        .score-display {
-            font-size: 1.6em;
-            font-weight: bold;
-            margin-bottom: 8px;
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
-        }
-        
-        .score-available {
-            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-        }
-        
-        .score-na {
-            background: #6c757d;
-            color: #fff;
-        }
-        
-        .low-fps-display {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 8px;
-            padding: 8px;
-            border-radius: 6px;
-            color: white;
-            background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
-        }
-        
-        .low-fps-na {
-            background: #6c757d;
-        }
-        
-        .performance-indicator {
-            margin-top: 15px;
-        }
-        
-        .percentage-text {
-            font-size: 0.9em;
-            font-weight: bold;
-            color: #28a745;
-            margin-bottom: 5px;
-        }
-        
-        .performance-bar {
-            height: 8px;
-            background: #e9ecef;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .performance-fill {
-            height: 100%;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-            border-radius: 4px;
-            transition: width 0.3s ease;
-        }
-        
-        .unit-label {
-            font-size: 0.8em;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        @media (max-width: 768px) {
-            .gpu-selectors {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .vs-text {
-                order: -1;
-            }
-            
-            .comparison-header {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .benchmark-item {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .back-btn {
-                position: static;
-                transform: none;
-                margin-bottom: 15px;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#6366f1'
+                    }
+                }
             }
         }
-    </style>
+    </script>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <a href="/" class="back-btn">← Back</a>
-            <h1>🎮 GPU Comparison</h1>
-            <p>Compare two GPUs across all available gaming benchmarks</p>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-8 relative">
+            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2">
+                ← Back
+            </a>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">🎮 GPU Comparison</h1>
+            <p class="text-lg text-gray-600">Compare two GPUs across all available gaming benchmarks</p>
         </div>
         
-        <div class="selection-section">
-            <div class="gpu-selectors">
-                <div class="gpu-selector">
-                    <h3>GPU 1</h3>
-                    <div class="searchable-dropdown">
-                        <input type="text" id="gpu1-input" class="dropdown-input" placeholder="Type to search GPUs..." readonly>
-                        <div id="gpu1-list" class="dropdown-list"></div>
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-3">
+                    <h3 class="text-lg font-semibold text-gray-900">GPU 1</h3>
+                    <div class="relative">
+                        <input type="text" id="gpu1-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search GPUs..." readonly>
+                        <div id="gpu1-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     </div>
                 </div>
                 
-                <div class="vs-text">VS</div>
+                <div class="text-center">
+                    <div class="bg-red-100 text-red-800 font-bold text-xl px-6 py-3 rounded-full inline-block">VS</div>
+                </div>
                 
-                <div class="gpu-selector">
-                    <h3>GPU 2</h3>
-                    <div class="searchable-dropdown">
-                        <input type="text" id="gpu2-input" class="dropdown-input" placeholder="Type to search GPUs..." readonly>
-                        <div id="gpu2-list" class="dropdown-list"></div>
+                <div class="space-y-3">
+                    <h3 class="text-lg font-semibold text-gray-900">GPU 2</h3>
+                    <div class="relative">
+                        <input type="text" id="gpu2-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search GPUs..." readonly>
+                        <div id="gpu2-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="comparison-section">
-            <div id="no-selection" class="no-selection">
-                Select two GPUs above to see their comparison
+        <div class="space-y-6">
+            <div id="no-selection" class="bg-white rounded-xl shadow-md p-12 text-center border border-gray-200">
+                <div class="text-gray-400 text-6xl mb-4">🎮</div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Select GPUs to Compare</h3>
+                <p class="text-gray-600">Choose two GPUs above to see their detailed gaming benchmark comparison</p>
             </div>
             
             <div id="comparison-results" style="display: none;">
-                <div class="comparison-header">
-                    <div class="gpu-info" id="gpu1-info">
-                        <h2 id="gpu1-name">-</h2>
-                    </div>
-                    <div class="gpu-info" id="gpu2-info">
-                        <h2 id="gpu2-name">-</h2>
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="text-center p-4 bg-red-50 rounded-lg border border-red-200" id="gpu1-info">
+                            <h2 class="text-xl font-bold text-red-900 mb-2" id="gpu1-name">-</h2>
+                        </div>
+                        <div class="text-center p-4 bg-orange-50 rounded-lg border border-orange-200" id="gpu2-info">
+                            <h2 class="text-xl font-bold text-orange-900 mb-2" id="gpu2-name">-</h2>
+                        </div>
                     </div>
                 </div>
                 
-                <div id="benchmark-groups"></div>
+                <div id="benchmark-groups" class="space-y-6"></div>
             </div>
         </div>
     </div>
@@ -449,20 +176,19 @@
 
         function showDropdown(list, items, input, onSelect, id) {
             list.innerHTML = '';
-            list.style.display = 'block';
+            list.classList.remove('hidden');
             
             if (items.length === 0) {
                 const noResults = document.createElement('div');
-                noResults.className = 'dropdown-item';
+                noResults.className = 'px-4 py-3 text-gray-500 text-sm';
                 noResults.textContent = 'No GPUs found';
-                noResults.style.color = '#999';
                 list.appendChild(noResults);
                 return;
             }
             
             items.slice(0, 20).forEach((item, index) => { // Limit to 20 results
                 const div = document.createElement('div');
-                div.className = 'dropdown-item';
+                div.className = 'px-4 py-3 cursor-pointer text-gray-900 hover:bg-red-50 hover:text-red-900 transition-colors duration-150 border-b border-gray-100 last:border-b-0';
                 div.textContent = item.name;
                 div.addEventListener('click', () => {
                     selectItem(input, item, onSelect, id);
@@ -475,18 +201,20 @@
         }
 
         function hideDropdown(list) {
-            list.style.display = 'none';
+            list.classList.add('hidden');
         }
 
         function highlightItem(item) {
             // Remove previous highlight
             const prev = item.parentElement.querySelector('.highlighted');
-            if (prev) prev.classList.remove('highlighted');
+            if (prev) {
+                prev.classList.remove('highlighted', 'bg-red-500', 'text-white');
+                prev.classList.add('hover:bg-red-50', 'hover:text-red-900');
+            }
             
             // Add highlight
-            item.classList.add('highlighted');
-            item.style.backgroundColor = '#667eea';
-            item.style.color = 'white';
+            item.classList.add('highlighted', 'bg-red-500', 'text-white');
+            item.classList.remove('hover:bg-red-50', 'hover:text-red-900');
         }
 
         function selectItem(input, item, onSelect, id) {
@@ -627,70 +355,120 @@
 
         function createBenchmarkGroup(groupTitle, benchmarks, gpu1Results, gpu2Results) {
             const groupDiv = document.createElement('div');
-            groupDiv.className = 'benchmark-group';
+            groupDiv.className = 'bg-white rounded-xl shadow-md overflow-hidden border border-gray-200';
             
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'group-title';
+            titleDiv.className = 'bg-gray-800 text-white px-6 py-4 font-semibold text-lg';
             titleDiv.textContent = groupTitle;
             groupDiv.appendChild(titleDiv);
             
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'divide-y divide-gray-200';
+            
             benchmarks.forEach(benchmarkName => {
                 const benchmarkDiv = createBenchmarkItem(benchmarkName, gpu1Results, gpu2Results);
-                groupDiv.appendChild(benchmarkDiv);
+                contentDiv.appendChild(benchmarkDiv);
             });
             
+            groupDiv.appendChild(contentDiv);
             return groupDiv;
         }
 
         function createBenchmarkItem(benchmarkName, gpu1Results, gpu2Results) {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'benchmark-item';
+            itemDiv.className = 'p-6';
             
             // Benchmark name
             const nameDiv = document.createElement('div');
-            nameDiv.className = 'benchmark-name';
+            nameDiv.className = 'text-lg font-medium text-gray-900 mb-4';
             const benchmarkInfo = gpu1Results[benchmarkName] || gpu2Results[benchmarkName];
             nameDiv.textContent = benchmarkName;
             itemDiv.appendChild(nameDiv);
             
+            // Results container
+            const resultsDiv = document.createElement('div');
+            resultsDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+            
             // GPU 1 result
             const gpu1ResultDiv = createGPUResult(gpu1Results[benchmarkName], gpu2Results[benchmarkName], true);
-            itemDiv.appendChild(gpu1ResultDiv);
+            resultsDiv.appendChild(gpu1ResultDiv);
             
             // GPU 2 result
             const gpu2ResultDiv = createGPUResult(gpu2Results[benchmarkName], gpu1Results[benchmarkName], false);
-            itemDiv.appendChild(gpu2ResultDiv);
+            resultsDiv.appendChild(gpu2ResultDiv);
             
+            itemDiv.appendChild(resultsDiv);
             return itemDiv;
         }
 
         function createGPUResult(currentResult, otherResult, isFirst) {
             const resultDiv = document.createElement('div');
-            resultDiv.className = 'gpu-result';
+            resultDiv.className = `p-4 rounded-lg border-2 ${isFirst ? 'bg-red-50 border-red-200' : 'bg-orange-50 border-orange-200'}`;
             
             if (currentResult) {
-                // Average FPS
-                const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'score-display score-available';
-                scoreDiv.textContent = currentResult.score.toFixed(1);
-                resultDiv.appendChild(scoreDiv);
+                // Calculate max score for proportional bars (compare with other result)
+                let maxScore = currentResult.score;
+                if (otherResult && otherResult.score > maxScore) {
+                    maxScore = otherResult.score;
+                }
+                // Add some padding to max score for better visualization
+                maxScore = maxScore * 1.1;
                 
-                const unitDiv = document.createElement('div');
-                unitDiv.className = 'unit-label';
-                unitDiv.textContent = 'Average FPS';
-                resultDiv.appendChild(unitDiv);
+                // Average FPS Label (above bars)
+                const avgFpsLabel = document.createElement('div');
+                avgFpsLabel.className = `text-sm font-medium ${isFirst ? 'text-red-700' : 'text-orange-700'} mb-1`;
+                avgFpsLabel.textContent = 'Average FPS';
+                resultDiv.appendChild(avgFpsLabel);
                 
-                // 1% Low FPS (if available)
+                // Average FPS Bar (top bar)
+                const avgFpsContainer = document.createElement('div');
+                avgFpsContainer.className = 'relative';
+                
+                const avgFpsBackground = document.createElement('div');
+                avgFpsBackground.className = 'w-full h-8 bg-gray-200 rounded-t-md';
+                avgFpsContainer.appendChild(avgFpsBackground);
+                
+                const avgFpsDiv = document.createElement('div');
+                avgFpsDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-red-500' : 'bg-orange-500'} rounded-t-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                avgFpsDiv.textContent = currentResult.score.toFixed(1);
+                const avgFpsWidth = Math.max((currentResult.score / maxScore) * 100, 20);
+                avgFpsDiv.style.width = `${avgFpsWidth}%`;
+                avgFpsContainer.appendChild(avgFpsDiv);
+                
+                resultDiv.appendChild(avgFpsContainer);
+                
+                // 1% Low FPS Bar (bottom bar, touching the top bar)
                 if (currentResult.score_1_percent_low) {
-                    const lowFpsDiv = document.createElement('div');
-                    lowFpsDiv.className = 'low-fps-display';
-                    lowFpsDiv.textContent = currentResult.score_1_percent_low.toFixed(1);
-                    resultDiv.appendChild(lowFpsDiv);
+                    const lowFpsContainer = document.createElement('div');
+                    lowFpsContainer.className = 'relative';
                     
-                    const lowUnitDiv = document.createElement('div');
-                    lowUnitDiv.className = 'unit-label';
-                    lowUnitDiv.textContent = '1% Low FPS';
-                    resultDiv.appendChild(lowUnitDiv);
+                    const lowFpsBackground = document.createElement('div');
+                    lowFpsBackground.className = 'w-full h-8 bg-gray-200 rounded-b-md';
+                    lowFpsContainer.appendChild(lowFpsBackground);
+                    
+                    const lowFpsDiv = document.createElement('div');
+                    lowFpsDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-red-400' : 'bg-orange-400'} rounded-b-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                    lowFpsDiv.textContent = currentResult.score_1_percent_low.toFixed(1);
+                    const lowFpsWidth = Math.max((currentResult.score_1_percent_low / maxScore) * 100, 18);
+                    lowFpsDiv.style.width = `${lowFpsWidth}%`;
+                    lowFpsContainer.appendChild(lowFpsDiv);
+                    
+                    resultDiv.appendChild(lowFpsContainer);
+                    
+                    // 1% Low FPS Label (below bars)
+                    const lowFpsLabel = document.createElement('div');
+                    lowFpsLabel.className = `text-sm font-medium ${isFirst ? 'text-red-700' : 'text-orange-700'} mt-1 mb-4`;
+                    lowFpsLabel.textContent = '1% Low FPS';
+                    resultDiv.appendChild(lowFpsLabel);
+                } else {
+                    // If no 1% low data, round the bottom of the average FPS bar
+                    avgFpsBackground.className = 'w-full h-8 bg-gray-200 rounded-md';
+                    avgFpsDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-red-500' : 'bg-orange-500'} rounded-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                    
+                    // Add spacing
+                    const spacer = document.createElement('div');
+                    spacer.className = 'mb-4';
+                    resultDiv.appendChild(spacer);
                 }
                 
                 // Calculate performance increase (only show if this GPU is better)
@@ -698,18 +476,18 @@
                     const increase = calculatePerformanceIncrease(currentResult.score, otherResult.score);
                     if (increase.percentage > 0) {
                         const indicatorDiv = document.createElement('div');
-                        indicatorDiv.className = 'performance-indicator';
+                        indicatorDiv.className = 'space-y-1';
                         
                         const textDiv = document.createElement('div');
-                        textDiv.className = 'percentage-text';
+                        textDiv.className = 'text-xs font-semibold text-emerald-600';
                         textDiv.textContent = increase.text;
                         indicatorDiv.appendChild(textDiv);
                         
                         const barDiv = document.createElement('div');
-                        barDiv.className = 'performance-bar';
+                        barDiv.className = 'w-full h-2 bg-gray-200 rounded-full overflow-hidden';
                         
                         const fillDiv = document.createElement('div');
-                        fillDiv.className = 'performance-fill';
+                        fillDiv.className = 'h-full bg-emerald-500 rounded-full transition-all duration-500';
                         fillDiv.style.width = `${Math.min(increase.percentage, 100)}%`;
                         barDiv.appendChild(fillDiv);
                         
@@ -718,15 +496,25 @@
                     }
                 }
             } else {
-                const scoreDiv = document.createElement('div');
-                scoreDiv.className = 'score-display score-na';
-                scoreDiv.textContent = 'N/A';
-                resultDiv.appendChild(scoreDiv);
-                
+                // No data available
                 const unitDiv = document.createElement('div');
-                unitDiv.className = 'unit-label';
+                unitDiv.className = 'text-sm text-gray-600 mb-2';
                 unitDiv.textContent = 'No data available';
                 resultDiv.appendChild(unitDiv);
+                
+                const scoreContainer = document.createElement('div');
+                scoreContainer.className = 'relative mb-3';
+                
+                const scoreBackground = document.createElement('div');
+                scoreBackground.className = 'w-full h-8 bg-gray-200 rounded-md';
+                scoreContainer.appendChild(scoreBackground);
+                
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'absolute top-0 left-0 w-full h-8 bg-gray-400 rounded-md flex items-center justify-center text-white font-semibold text-sm';
+                scoreDiv.textContent = 'N/A';
+                scoreContainer.appendChild(scoreDiv);
+                
+                resultDiv.appendChild(scoreContainer);
             }
             
             return resultDiv;
@@ -752,15 +540,7 @@
             return { percentage: 0, text: '' };
         }
 
-        // Add CSS for highlighted dropdown items
-        const style = document.createElement('style');
-        style.textContent = `
-            .dropdown-item.highlighted {
-                background-color: #667eea !important;
-                color: white !important;
-            }
-        `;
-        document.head.appendChild(style);
+        // Tailwind handles all styling - no additional CSS needed
     </script>
 </body>
 </html>
