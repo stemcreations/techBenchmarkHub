@@ -19,61 +19,61 @@
     </script>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <div class="text-center mb-8 relative">
-            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="text-center mb-4 relative">
+            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2 text-sm">
                 ← Back
             </a>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">💻 CPU Comparison</h1>
-            <p class="text-lg text-gray-600">Compare two CPUs across all available benchmarks</p>
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">💻 CPU Comparison</h1>
+            <p class="text-base text-gray-600">Compare two CPUs across all available benchmarks</p>
         </div>
         
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-gray-900">CPU 1</h3>
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <div class="space-y-2">
+                    <h3 class="text-base font-semibold text-gray-900">CPU 1</h3>
                     <div class="relative">
-                        <input type="text" id="cpu1-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search CPUs..." readonly>
-                        <div id="cpu1-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
+                        <input type="text" id="cpu1-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 text-sm" placeholder="Type to search CPUs..." readonly>
+                        <div id="cpu1-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto hidden"></div>
                     </div>
                 </div>
                 
                 <div class="text-center">
-                    <div class="bg-blue-100 text-blue-800 font-bold text-xl px-6 py-3 rounded-full inline-block">VS</div>
+                    <div class="bg-blue-100 text-blue-800 font-bold text-lg px-4 py-2 rounded-full inline-block">VS</div>
                 </div>
                 
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-gray-900">CPU 2</h3>
+                <div class="space-y-2">
+                    <h3 class="text-base font-semibold text-gray-900">CPU 2</h3>
                     <div class="relative">
-                        <input type="text" id="cpu2-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search CPUs..." readonly>
-                        <div id="cpu2-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
+                        <input type="text" id="cpu2-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 text-sm" placeholder="Type to search CPUs..." readonly>
+                        <div id="cpu2-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto hidden"></div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="space-y-6">
-            <div id="no-selection" class="bg-white rounded-xl shadow-md p-12 text-center border border-gray-200">
-                <div class="text-gray-400 text-6xl mb-4">🔍</div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Select CPUs to Compare</h3>
-                <p class="text-gray-600">Choose two CPUs above to see their detailed benchmark comparison</p>
+        <div class="space-y-4">
+            <div id="no-selection" class="bg-white rounded-lg shadow-sm p-8 text-center border border-gray-200">
+                <div class="text-gray-400 text-4xl mb-3">🔍</div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Select CPUs to Compare</h3>
+                <p class="text-sm text-gray-600">Choose two CPUs above to see their detailed benchmark comparison</p>
             </div>
             
             <div id="comparison-results" style="display: none;">
-                <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-gray-200">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-200" id="cpu1-info">
-                            <h2 class="text-xl font-bold text-blue-900 mb-2" id="cpu1-name">-</h2>
-                            <p class="text-blue-700" id="cpu1-cores">-</p>
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="text-center p-3 bg-blue-50 rounded-md border border-blue-200" id="cpu1-info">
+                            <h2 class="text-lg font-bold text-blue-900 mb-1" id="cpu1-name">-</h2>
+                            <p class="text-sm text-blue-700" id="cpu1-cores">-</p>
                         </div>
-                        <div class="text-center p-4 bg-indigo-50 rounded-lg border border-indigo-200" id="cpu2-info">
-                            <h2 class="text-xl font-bold text-indigo-900 mb-2" id="cpu2-name">-</h2>
-                            <p class="text-indigo-700" id="cpu2-cores">-</p>
+                        <div class="text-center p-3 bg-indigo-50 rounded-md border border-indigo-200" id="cpu2-info">
+                            <h2 class="text-lg font-bold text-indigo-900 mb-1" id="cpu2-name">-</h2>
+                            <p class="text-sm text-indigo-700" id="cpu2-cores">-</p>
                         </div>
                     </div>
                 </div>
                 
-                <div id="benchmark-groups" class="space-y-6"></div>
+                <div id="benchmark-groups" class="space-y-4"></div>
             </div>
         </div>
     </div>
@@ -190,7 +190,7 @@
             
             items.slice(0, 20).forEach((item, index) => { // Limit to 20 results
                 const div = document.createElement('div');
-                div.className = 'px-4 py-3 cursor-pointer text-gray-900 hover:bg-blue-50 hover:text-blue-900 transition-colors duration-150 border-b border-gray-100 last:border-b-0';
+                div.className = 'px-3 py-2 cursor-pointer text-gray-900 hover:bg-blue-50 hover:text-blue-900 transition-colors duration-150 border-b border-gray-100 last:border-b-0 text-sm';
                 div.textContent = item.name;
                 div.addEventListener('click', () => {
                     selectItem(input, item, onSelect, id);
@@ -440,15 +440,15 @@
 
         function createBenchmarkGroup(groupTitle, benchmarks, cpu1Results, cpu2Results) {
             const groupDiv = document.createElement('div');
-            groupDiv.className = 'bg-white rounded-xl shadow-md overflow-hidden border border-gray-200';
+            groupDiv.className = 'bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200';
             
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'bg-gray-800 text-white px-6 py-4 font-semibold text-lg';
+            titleDiv.className = 'bg-gray-800 text-white px-4 py-2 font-semibold text-base';
             titleDiv.textContent = groupTitle;
             groupDiv.appendChild(titleDiv);
             
             const contentDiv = document.createElement('div');
-            contentDiv.className = 'divide-y divide-gray-200';
+            contentDiv.className = 'divide-y divide-gray-100';
             
             benchmarks.forEach(benchmarkName => {
                 const benchmarkDiv = createBenchmarkItem(benchmarkName, cpu1Results, cpu2Results);
@@ -461,18 +461,18 @@
 
         function createBenchmarkItem(benchmarkName, cpu1Results, cpu2Results) {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'p-6';
+            itemDiv.className = 'p-4';
             
             // Benchmark name
             const nameDiv = document.createElement('div');
-            nameDiv.className = 'text-lg font-medium text-gray-900 mb-4';
+            nameDiv.className = 'text-base font-medium text-gray-900 mb-3';
             const benchmarkInfo = cpu1Results[benchmarkName] || cpu2Results[benchmarkName];
             nameDiv.textContent = benchmarkName + (benchmarkInfo ? ` (${benchmarkInfo.unit_type})` : '');
             itemDiv.appendChild(nameDiv);
             
             // Results container
             const resultsDiv = document.createElement('div');
-            resultsDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+            resultsDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-3';
             
             // CPU 1 result
             const cpu1ResultDiv = createCPUResult(cpu1Results[benchmarkName], cpu2Results[benchmarkName], true);
@@ -488,7 +488,7 @@
 
         function createCPUResult(currentResult, otherResult, isFirst) {
             const resultDiv = document.createElement('div');
-            resultDiv.className = `p-4 rounded-lg border-2 ${isFirst ? 'bg-blue-50 border-blue-200' : 'bg-indigo-50 border-indigo-200'}`;
+            resultDiv.className = `p-3 rounded-md border ${isFirst ? 'bg-blue-50 border-blue-200' : 'bg-indigo-50 border-indigo-200'}`;
             
             if (currentResult) {
                 // Calculate max score for proportional bars
@@ -512,20 +512,20 @@
                 
                 // Unit label above the bar
                 const unitDiv = document.createElement('div');
-                unitDiv.className = `text-sm font-medium ${isFirst ? 'text-blue-700' : 'text-indigo-700'} mb-2`;
+                unitDiv.className = `text-xs font-medium ${isFirst ? 'text-blue-700' : 'text-indigo-700'} mb-1`;
                 unitDiv.textContent = currentResult.unit_type;
                 resultDiv.appendChild(unitDiv);
                 
                 // Score Bar Container
                 const scoreContainer = document.createElement('div');
-                scoreContainer.className = 'relative mb-3';
+                scoreContainer.className = 'relative mb-2';
                 
                 const scoreBackground = document.createElement('div');
-                scoreBackground.className = 'w-full h-8 bg-gray-200 rounded-md';
+                scoreBackground.className = 'w-full h-6 bg-gray-200 rounded-md';
                 scoreContainer.appendChild(scoreBackground);
                 
                 const scoreDiv = document.createElement('div');
-                scoreDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-blue-500' : 'bg-indigo-500'} rounded-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                scoreDiv.className = `absolute top-0 left-0 h-6 ${isFirst ? 'bg-blue-500' : 'bg-indigo-500'} rounded-md flex items-center justify-end pr-2 text-white font-semibold text-xs transition-all duration-300`;
                 scoreDiv.textContent = currentResult.score.toFixed(1);
                 scoreDiv.style.width = `${barWidth}%`;
                 scoreContainer.appendChild(scoreDiv);
@@ -537,7 +537,7 @@
                     const increase = calculatePerformanceIncrease(currentResult.score, otherResult.score, currentResult.unit_type);
                     if (increase.percentage > 0) {
                         const indicatorDiv = document.createElement('div');
-                        indicatorDiv.className = 'space-y-1';
+                        indicatorDiv.className = 'space-y-0.5';
                         
                         const textDiv = document.createElement('div');
                         textDiv.className = 'text-xs font-semibold text-emerald-600';
@@ -545,7 +545,7 @@
                         indicatorDiv.appendChild(textDiv);
                         
                         const barDiv = document.createElement('div');
-                        barDiv.className = 'w-full h-2 bg-gray-200 rounded-full overflow-hidden';
+                        barDiv.className = 'w-full h-1.5 bg-gray-200 rounded-full overflow-hidden';
                         
                         const fillDiv = document.createElement('div');
                         fillDiv.className = 'h-full bg-emerald-500 rounded-full transition-all duration-500';

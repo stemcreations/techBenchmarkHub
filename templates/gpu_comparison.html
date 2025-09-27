@@ -19,59 +19,59 @@
     </script>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <div class="text-center mb-8 relative">
-            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="text-center mb-4 relative">
+            <a href="/" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-50 text-gray-700 px-3 py-1.5 rounded-lg border border-gray-300 hover:border-gray-400 transition-colors duration-200 flex items-center gap-2 text-sm">
                 ← Back
             </a>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">🎮 GPU Comparison</h1>
-            <p class="text-lg text-gray-600">Compare two GPUs across all available gaming benchmarks</p>
+            <h1 class="text-2xl font-bold text-gray-900 mb-1">🎮 GPU Comparison</h1>
+            <p class="text-base text-gray-600">Compare two GPUs across all available gaming benchmarks</p>
         </div>
         
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-200">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-gray-900">GPU 1</h3>
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <div class="space-y-2">
+                    <h3 class="text-base font-semibold text-gray-900">GPU 1</h3>
                     <div class="relative">
-                        <input type="text" id="gpu1-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search GPUs..." readonly>
-                        <div id="gpu1-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
+                        <input type="text" id="gpu1-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 text-sm" placeholder="Type to search GPUs..." readonly>
+                        <div id="gpu1-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto hidden"></div>
                     </div>
                 </div>
                 
                 <div class="text-center">
-                    <div class="bg-red-100 text-red-800 font-bold text-xl px-6 py-3 rounded-full inline-block">VS</div>
+                    <div class="bg-red-100 text-red-800 font-bold text-lg px-4 py-2 rounded-full inline-block">VS</div>
                 </div>
                 
-                <div class="space-y-3">
-                    <h3 class="text-lg font-semibold text-gray-900">GPU 2</h3>
+                <div class="space-y-2">
+                    <h3 class="text-base font-semibold text-gray-900">GPU 2</h3>
                     <div class="relative">
-                        <input type="text" id="gpu2-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500" placeholder="Type to search GPUs..." readonly>
-                        <div id="gpu2-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto hidden"></div>
+                        <input type="text" id="gpu2-input" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 text-sm" placeholder="Type to search GPUs..." readonly>
+                        <div id="gpu2-list" class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto hidden"></div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="space-y-6">
-            <div id="no-selection" class="bg-white rounded-xl shadow-md p-12 text-center border border-gray-200">
-                <div class="text-gray-400 text-6xl mb-4">🎮</div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Select GPUs to Compare</h3>
-                <p class="text-gray-600">Choose two GPUs above to see their detailed gaming benchmark comparison</p>
+        <div class="space-y-4">
+            <div id="no-selection" class="bg-white rounded-lg shadow-sm p-8 text-center border border-gray-200">
+                <div class="text-gray-400 text-4xl mb-3">🎮</div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Select GPUs to Compare</h3>
+                <p class="text-sm text-gray-600">Choose two GPUs above to see their detailed gaming benchmark comparison</p>
             </div>
             
             <div id="comparison-results" style="display: none;">
-                <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-gray-200">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="text-center p-4 bg-red-50 rounded-lg border border-red-200" id="gpu1-info">
-                            <h2 class="text-xl font-bold text-red-900 mb-2" id="gpu1-name">-</h2>
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-4 border border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="text-center p-3 bg-red-50 rounded-md border border-red-200" id="gpu1-info">
+                            <h2 class="text-lg font-bold text-red-900 mb-1" id="gpu1-name">-</h2>
                         </div>
-                        <div class="text-center p-4 bg-orange-50 rounded-lg border border-orange-200" id="gpu2-info">
-                            <h2 class="text-xl font-bold text-orange-900 mb-2" id="gpu2-name">-</h2>
+                        <div class="text-center p-3 bg-orange-50 rounded-md border border-orange-200" id="gpu2-info">
+                            <h2 class="text-lg font-bold text-orange-900 mb-1" id="gpu2-name">-</h2>
                         </div>
                     </div>
                 </div>
                 
-                <div id="benchmark-groups" class="space-y-6"></div>
+                <div id="benchmark-groups" class="space-y-4"></div>
             </div>
         </div>
     </div>
@@ -188,7 +188,7 @@
             
             items.slice(0, 20).forEach((item, index) => { // Limit to 20 results
                 const div = document.createElement('div');
-                div.className = 'px-4 py-3 cursor-pointer text-gray-900 hover:bg-red-50 hover:text-red-900 transition-colors duration-150 border-b border-gray-100 last:border-b-0';
+                div.className = 'px-3 py-2 cursor-pointer text-gray-900 hover:bg-red-50 hover:text-red-900 transition-colors duration-150 border-b border-gray-100 last:border-b-0 text-sm';
                 div.textContent = item.name;
                 div.addEventListener('click', () => {
                     selectItem(input, item, onSelect, id);
@@ -441,15 +441,15 @@
 
         function createBenchmarkGroup(groupTitle, benchmarks, gpu1Results, gpu2Results) {
             const groupDiv = document.createElement('div');
-            groupDiv.className = 'bg-white rounded-xl shadow-md overflow-hidden border border-gray-200';
+            groupDiv.className = 'bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200';
             
             const titleDiv = document.createElement('div');
-            titleDiv.className = 'bg-gray-800 text-white px-6 py-4 font-semibold text-lg';
+            titleDiv.className = 'bg-gray-800 text-white px-4 py-2 font-semibold text-base';
             titleDiv.textContent = groupTitle;
             groupDiv.appendChild(titleDiv);
             
             const contentDiv = document.createElement('div');
-            contentDiv.className = 'divide-y divide-gray-200';
+            contentDiv.className = 'divide-y divide-gray-100';
             
             benchmarks.forEach(benchmarkName => {
                 const benchmarkDiv = createBenchmarkItem(benchmarkName, gpu1Results, gpu2Results);
@@ -462,18 +462,18 @@
 
         function createBenchmarkItem(benchmarkName, gpu1Results, gpu2Results) {
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'p-6';
+            itemDiv.className = 'p-4';
             
             // Benchmark name
             const nameDiv = document.createElement('div');
-            nameDiv.className = 'text-lg font-medium text-gray-900 mb-4';
+            nameDiv.className = 'text-base font-medium text-gray-900 mb-3';
             const benchmarkInfo = gpu1Results[benchmarkName] || gpu2Results[benchmarkName];
             nameDiv.textContent = benchmarkName;
             itemDiv.appendChild(nameDiv);
             
             // Results container
             const resultsDiv = document.createElement('div');
-            resultsDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+            resultsDiv.className = 'grid grid-cols-1 md:grid-cols-2 gap-3';
             
             // GPU 1 result
             const gpu1ResultDiv = createGPUResult(gpu1Results[benchmarkName], gpu2Results[benchmarkName], true);
@@ -489,7 +489,7 @@
 
         function createGPUResult(currentResult, otherResult, isFirst) {
             const resultDiv = document.createElement('div');
-            resultDiv.className = `p-4 rounded-lg border-2 ${isFirst ? 'bg-red-50 border-red-200' : 'bg-orange-50 border-orange-200'}`;
+            resultDiv.className = `p-3 rounded-md border ${isFirst ? 'bg-red-50 border-red-200' : 'bg-orange-50 border-orange-200'}`;
             
             if (currentResult) {
                 // Calculate max score for proportional bars (compare with other result)
@@ -502,7 +502,7 @@
                 
                 // Average FPS Label (above bars)
                 const avgFpsLabel = document.createElement('div');
-                avgFpsLabel.className = `text-sm font-medium ${isFirst ? 'text-red-700' : 'text-orange-700'} mb-1`;
+                avgFpsLabel.className = `text-xs font-medium ${isFirst ? 'text-red-700' : 'text-orange-700'} mb-1`;
                 avgFpsLabel.textContent = 'Average FPS';
                 resultDiv.appendChild(avgFpsLabel);
                 
@@ -511,11 +511,11 @@
                 avgFpsContainer.className = 'relative';
                 
                 const avgFpsBackground = document.createElement('div');
-                avgFpsBackground.className = 'w-full h-8 bg-gray-200 rounded-t-md';
+                avgFpsBackground.className = 'w-full h-6 bg-gray-200 rounded-t-md';
                 avgFpsContainer.appendChild(avgFpsBackground);
                 
                 const avgFpsDiv = document.createElement('div');
-                avgFpsDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-red-500' : 'bg-orange-500'} rounded-t-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                avgFpsDiv.className = `absolute top-0 left-0 h-6 ${isFirst ? 'bg-red-500' : 'bg-orange-500'} rounded-t-md flex items-center justify-end pr-2 text-white font-semibold text-xs transition-all duration-300`;
                 avgFpsDiv.textContent = currentResult.score.toFixed(1);
                 const avgFpsWidth = Math.max((currentResult.score / maxScore) * 100, 20);
                 avgFpsDiv.style.width = `${avgFpsWidth}%`;
@@ -529,11 +529,11 @@
                     lowFpsContainer.className = 'relative';
                     
                     const lowFpsBackground = document.createElement('div');
-                    lowFpsBackground.className = 'w-full h-8 bg-gray-200 rounded-b-md';
+                    lowFpsBackground.className = 'w-full h-6 bg-gray-200 rounded-b-md';
                     lowFpsContainer.appendChild(lowFpsBackground);
                     
                     const lowFpsDiv = document.createElement('div');
-                    lowFpsDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-red-400' : 'bg-orange-400'} rounded-b-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                    lowFpsDiv.className = `absolute top-0 left-0 h-6 ${isFirst ? 'bg-red-400' : 'bg-orange-400'} rounded-b-md flex items-center justify-end pr-2 text-white font-semibold text-xs transition-all duration-300`;
                     lowFpsDiv.textContent = currentResult.score_1_percent_low.toFixed(1);
                     const lowFpsWidth = Math.max((currentResult.score_1_percent_low / maxScore) * 100, 18);
                     lowFpsDiv.style.width = `${lowFpsWidth}%`;
@@ -543,17 +543,17 @@
                     
                     // 1% Low FPS Label (below bars)
                     const lowFpsLabel = document.createElement('div');
-                    lowFpsLabel.className = `text-sm font-medium ${isFirst ? 'text-red-700' : 'text-orange-700'} mt-1 mb-4`;
+                    lowFpsLabel.className = `text-xs font-medium ${isFirst ? 'text-red-700' : 'text-orange-700'} mt-1 mb-3`;
                     lowFpsLabel.textContent = '1% Low FPS';
                     resultDiv.appendChild(lowFpsLabel);
                 } else {
                     // If no 1% low data, round the bottom of the average FPS bar
-                    avgFpsBackground.className = 'w-full h-8 bg-gray-200 rounded-md';
-                    avgFpsDiv.className = `absolute top-0 left-0 h-8 ${isFirst ? 'bg-red-500' : 'bg-orange-500'} rounded-md flex items-center justify-end pr-2 text-white font-semibold text-sm transition-all duration-300`;
+                    avgFpsBackground.className = 'w-full h-6 bg-gray-200 rounded-md';
+                    avgFpsDiv.className = `absolute top-0 left-0 h-6 ${isFirst ? 'bg-red-500' : 'bg-orange-500'} rounded-md flex items-center justify-end pr-2 text-white font-semibold text-xs transition-all duration-300`;
                     
                     // Add spacing
                     const spacer = document.createElement('div');
-                    spacer.className = 'mb-4';
+                    spacer.className = 'mb-3';
                     resultDiv.appendChild(spacer);
                 }
                 
@@ -562,7 +562,7 @@
                     const increase = calculatePerformanceIncrease(currentResult.score, otherResult.score);
                     if (increase.percentage > 0) {
                         const indicatorDiv = document.createElement('div');
-                        indicatorDiv.className = 'space-y-1';
+                        indicatorDiv.className = 'space-y-0.5';
                         
                         const textDiv = document.createElement('div');
                         textDiv.className = 'text-xs font-semibold text-emerald-600';
@@ -570,7 +570,7 @@
                         indicatorDiv.appendChild(textDiv);
                         
                         const barDiv = document.createElement('div');
-                        barDiv.className = 'w-full h-2 bg-gray-200 rounded-full overflow-hidden';
+                        barDiv.className = 'w-full h-1.5 bg-gray-200 rounded-full overflow-hidden';
                         
                         const fillDiv = document.createElement('div');
                         fillDiv.className = 'h-full bg-emerald-500 rounded-full transition-all duration-500';
