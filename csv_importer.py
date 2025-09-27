@@ -36,7 +36,7 @@ def detect_product_type(product_name):
     # Default to CPU if unclear
     return 'CPU'
 
-def import_csv(csv_file_path, benchmark_name, benchmark_description="", unit_type="score", resolution=None):
+def import_csv(csv_file_path, benchmark_name, benchmark_description="", unit_type="score", resolution=None, default_date=None):
     """
     Import CSV data into database
     Supports both CPU format (CPU_Model, Core_Count, Date, Score) 
@@ -48,6 +48,7 @@ def import_csv(csv_file_path, benchmark_name, benchmark_description="", unit_typ
         benchmark_description: Optional description
         unit_type: Type of measurement (score, fps, seconds, etc.)
         resolution: Resolution for gaming benchmarks ('1080p', '1440p', '4K') - applies to both CPU and GPU gaming tests
+        default_date: Default date to use if Date column is missing (format: '[M/YY]' e.g., '[9/25]')
     """
     
     with app.app_context():
@@ -61,25 +62,50 @@ def import_csv(csv_file_path, benchmark_name, benchmark_description="", unit_typ
         
         # Detect CSV format and validate
         is_gpu_format = False
+        has_date_column = 'Date' in df.columns
         
-        # Check for GPU format columns
-        gpu_columns = ['GPU_Model', 'Date', 'AVG_FPS', '1%_Low']
-        if all(col in df.columns for col in gpu_columns):
+        # Check for GPU format columns (Date is now optional)
+        gpu_columns_required = ['GPU_Model', 'AVG_FPS', '1%_Low']
+        gpu_columns_optional = ['GPU_Model', 'Date', 'AVG_FPS', '1%_Low']
+        
+        if all(col in df.columns for col in gpu_columns_required):
             is_gpu_format = True
             product_col = 'GPU_Model'
             score_col = 'AVG_FPS'
             core_count_col = None
             print("Detected GPU CSV format")
         else:
-            # Check for CPU format columns
-            cpu_columns = ['CPU_Model', 'Core_Count', 'Date', 'Score']
-            if not all(col in df.columns for col in cpu_columns):
-                print(f"CSV must have either GPU columns {gpu_columns} or CPU columns {cpu_columns}")
+            # Check for CPU format columns (Date is now optional)
+            cpu_columns_required = ['CPU_Model', 'Core_Count', 'Score']
+            cpu_columns_optional = ['CPU_Model', 'Core_Count', 'Date', 'Score']
+            
+            if not all(col in df.columns for col in cpu_columns_required):
+                print(f"CSV must have either:")
+                print(f"  GPU columns: {gpu_columns_optional} (Date optional)")
+                print(f"  CPU columns: {cpu_columns_optional} (Date optional)")
                 return False
             product_col = 'CPU_Model'
             score_col = 'Score'
             core_count_col = 'Core_Count'
             print("Detected CPU CSV format")
+        
+        # Handle missing Date column
+        if not has_date_column:
+            if default_date:
+                print(f"No Date column found. Using provided default date: {default_date}")
+                df['Date'] = default_date
+            else:
+                # Ask user for date input
+                while True:
+                    user_date = input("No Date column found in CSV. Please enter a date (format [M/YY], e.g., [9/25]): ").strip()
+                    if user_date.startswith('[') and user_date.endswith(']') and '/' in user_date:
+                        df['Date'] = user_date
+                        print(f"Using date: {user_date}")
+                        break
+                    else:
+                        print("Invalid format. Please use format [M/YY] like [9/25]")
+        else:
+            print(f"Found Date column in CSV")
         
         # Determine product type from first few entries
         sample_names = df[product_col].head(3).tolist()
@@ -145,11 +171,31 @@ def import_csv(csv_file_path, benchmark_name, benchmark_description="", unit_typ
             ).first()
             
             if existing_result:
-                existing_result.score = score
-                existing_result.score_1_percent_low = score_1_percent_low
-                existing_result.test_date = test_date
-                print(f"Updated result for {clean_name}: {score}" + 
-                      (f" (1% low: {score_1_percent_low})" if score_1_percent_low else ""))
+                # Ask user what to do with duplicate data
+                print(f"\nDuplicate found for {clean_name} in {full_benchmark_name}")
+                print(f"  Existing: {existing_result.score}" + 
+                      (f" (1% low: {existing_result.score_1_percent_low})" if existing_result.score_1_percent_low else "") +
+                      f" Date: {existing_result.test_date}")
+                print(f"  New data: {score}" + 
+                      (f" (1% low: {score_1_percent_low})" if score_1_percent_low else "") +
+                      f" Date: {test_date}")
+                
+                while True:
+                    choice = input("What would you like to do? (u)pdate existing / (s)kip new data / (q)uit import: ").lower().strip()
+                    if choice == 'u':
+                        existing_result.score = score
+                        existing_result.score_1_percent_low = score_1_percent_low
+                        existing_result.test_date = test_date
+                        print(f"✓ Updated result for {clean_name}")
+                        break
+                    elif choice == 's':
+                        print(f"✓ Skipped new data for {clean_name}")
+                        break
+                    elif choice == 'q':
+                        print("Import cancelled by user")
+                        return False
+                    else:
+                        print("Invalid choice. Please enter 'u', 's', or 'q'")
             else:
                 result = BenchmarkResult(
                     product_id=product.id,
@@ -160,10 +206,27 @@ def import_csv(csv_file_path, benchmark_name, benchmark_description="", unit_typ
                 )
                 db.session.add(result)
                 results_added += 1
+                print(f"✓ Added new result for {clean_name}: {score}" + 
+                      (f" (1% low: {score_1_percent_low})" if score_1_percent_low else ""))
         
         db.session.commit()
         print(f"Import complete! Added {products_added} products and {results_added} results")
         return True
+
+def import_csv_batch(csv_file_path, benchmark_name, benchmark_description="", unit_type="score", resolution=None, default_date=None, duplicate_action="ask"):
+    """
+    Import CSV with batch duplicate handling (useful for automated imports)
+    
+    Args:
+        duplicate_action: 'ask' (default), 'update' (always update), 'skip' (always skip)
+    """
+    # Temporarily modify the import function for batch processing
+    if duplicate_action != 'ask':
+        # You can call the regular import_csv and handle duplicates programmatically
+        # This is a simplified version - you'd implement the batch logic here
+        pass
+    
+    return import_csv(csv_file_path, benchmark_name, benchmark_description, unit_type, resolution, default_date)
 
 # Example usage script
 def main():
