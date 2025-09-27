@@ -213,6 +213,130 @@ def import_csv(csv_file_path, benchmark_name, benchmark_description="", unit_typ
         print(f"Import complete! Added {products_added} products and {results_added} results")
         return True
 
+def import_csv_auto(csv_file_path, default_date=None):
+    """
+    Auto-import CSV with metadata embedded in the file
+    
+    Expected CSV format:
+    # Benchmark Metadata
+    Benchmark,Your Benchmark Name
+    Resolution,1080p
+    Unit,fps
+    
+    # Data starts here
+    GPU_Model,Date,AVG_FPS,1%_Low
+    [data rows...]
+    
+    Args:
+        csv_file_path: Path to CSV file with embedded metadata
+        default_date: Default date if not in CSV data (optional)
+    """
+    print(f"Auto-importing CSV with embedded metadata: {csv_file_path}")
+    
+    # Read the file and extract metadata
+    metadata = {}
+    data_start_line = 0
+    
+    try:
+        with open(csv_file_path, 'r', encoding='utf-8') as file:
+            lines = file.readlines()
+            
+        for i, line in enumerate(lines):
+            line = line.strip()
+            
+            # Skip empty lines and comments
+            if not line or line.startswith('#'):
+                continue
+                
+            # Check if this looks like a metadata line (Key,Value format)
+            if ',' in line and not line.startswith(('GPU_Model', 'CPU_Model')):
+                parts = line.split(',', 1)  # Split on first comma only
+                if len(parts) == 2:
+                    key = parts[0].strip()
+                    value = parts[1].strip()
+                    metadata[key] = value
+                    continue
+            
+            # If we hit a line that looks like data headers, stop metadata parsing
+            if line.startswith(('GPU_Model', 'CPU_Model')):
+                data_start_line = i
+                break
+                
+        print(f"Found metadata: {metadata}")
+        print(f"Data starts at line {data_start_line + 1}")
+        
+    except Exception as e:
+        print(f"Error reading metadata from {csv_file_path}: {e}")
+        return False
+    
+    # Extract required metadata with prompts for missing values
+    benchmark_name = metadata.get('Benchmark')
+    if not benchmark_name:
+        benchmark_name = input("Benchmark name not found in CSV. Please enter benchmark name: ").strip()
+        if not benchmark_name:
+            print("Benchmark name is required!")
+            return False
+    
+    resolution = metadata.get('Resolution')
+    if not resolution:
+        resolution = input("Resolution not found in CSV. Enter resolution (1080p/1440p/4K or press Enter for none): ").strip()
+        if not resolution:
+            resolution = None
+    
+    unit_type = metadata.get('Unit', '').lower()
+    if not unit_type:
+        unit_type = input("Unit type not found in CSV. Enter unit type (fps/score/seconds): ").strip().lower()
+        if not unit_type:
+            unit_type = 'fps'  # Default
+    
+    # Optional fields
+    benchmark_description = metadata.get('Description', '')
+    
+    print(f"\nImporting with settings:")
+    print(f"  Benchmark: {benchmark_name}")
+    print(f"  Resolution: {resolution or 'None'}")
+    print(f"  Unit: {unit_type}")
+    print(f"  Description: {benchmark_description or 'None'}")
+    
+    # Create a temporary CSV file with just the data (no metadata)
+    import tempfile
+    import os
+    
+    temp_csv = None
+    try:
+        # Create temporary file with just the data portion
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False, encoding='utf-8') as temp_file:
+            temp_csv = temp_file.name
+            
+            # Write data lines (starting from data_start_line)
+            for line in lines[data_start_line:]:
+                if line.strip():  # Skip empty lines
+                    temp_file.write(line)
+        
+        # Use the existing import_csv function with the temporary file
+        success = import_csv(
+            csv_file_path=temp_csv,
+            benchmark_name=benchmark_name,
+            benchmark_description=benchmark_description,
+            unit_type=unit_type,
+            resolution=resolution,
+            default_date=default_date
+        )
+        
+        return success
+        
+    except Exception as e:
+        print(f"Error during auto-import: {e}")
+        return False
+        
+    finally:
+        # Clean up temporary file
+        if temp_csv and os.path.exists(temp_csv):
+            try:
+                os.unlink(temp_csv)
+            except:
+                pass
+
 def import_csv_batch(csv_file_path, benchmark_name, benchmark_description="", unit_type="score", resolution=None, default_date=None, duplicate_action="ask"):
     """
     Import CSV with batch duplicate handling (useful for automated imports)
